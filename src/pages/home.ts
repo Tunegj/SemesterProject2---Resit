@@ -18,6 +18,9 @@ export function homePage(): string {
     `;
 }
 
+/**
+ * Loads pets from the API and displays them in the #pets-test container.
+ */
 async function loadPets(): Promise<void> {
   const container = document.querySelector<HTMLDivElement>("#pets-test");
 
@@ -28,6 +31,19 @@ async function loadPets(): Promise<void> {
 
     container.innerHTML = `
       <p>Loaded ${pets.length} pets from the API.</p>
+
+      <ul>
+        ${pets
+          .slice(0, 5)
+          .map(
+            (pet) => `
+          <li>
+            ${pet.name} - ${pet.breed}
+          </li>
+        `,
+          )
+          .join("")}
+      </ul>
     `;
   } catch (error) {
     console.error(error);

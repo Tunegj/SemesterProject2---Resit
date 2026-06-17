@@ -1,3 +1,8 @@
+/**
+ * This file defines the TypeScript interfaces for the Pet data model used in the application.
+ * It includes the structure of a Pet object, as well as related types such as PetImage and PetOwner.
+ */
+
 export interface PetImage {
   url: string;
   alt?: string;
