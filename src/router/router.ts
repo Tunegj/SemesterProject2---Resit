@@ -1,4 +1,4 @@
-import { header } from "../components/header.ts";
+import { layout } from "../components/layout.ts";
 import { homePage } from "../pages/home.ts";
 import { notFoundPage } from "../pages/notFound.ts";
 import { listingsPage } from "../pages/listings.ts";
@@ -17,34 +17,34 @@ export function initRouter(): void {
 
   switch (route) {
     case "#/":
-      app.innerHTML = header() + homePage();
+      app.innerHTML = layout(homePage());
       break;
 
     case "#/listings":
-      app.innerHTML = header() + listingsPage();
+      app.innerHTML = layout(listingsPage());
       break;
 
     case "#/create":
-      app.innerHTML = header() + createPetPage();
+      app.innerHTML = layout(createPetPage());
       break;
 
     case "#/login":
-      app.innerHTML = header() + loginPage();
+      app.innerHTML = layout(loginPage());
       break;
 
     case "#/register":
-      app.innerHTML = header() + registerPage();
+      app.innerHTML = layout(registerPage());
       break;
 
     case "#/profile":
-      app.innerHTML = header() + profilePage();
+      app.innerHTML = layout(profilePage());
       break;
 
     case "#/listing":
-      app.innerHTML = header() + singleListingPage();
+      app.innerHTML = layout(singleListingPage());
       break;
 
     default:
-      app.innerHTML = header() + notFoundPage();
+      app.innerHTML = layout(notFoundPage());
   }
 }
