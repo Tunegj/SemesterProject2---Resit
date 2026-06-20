@@ -3,6 +3,10 @@ import { fetchPets } from "../services/pets.ts";
 export function homePage(): string {
   setTimeout(loadPets, 0);
   return `
+
+  <div class="bg-red-500 p-8 text-white">
+  TAILWIND TEST
+</div>
     <main class="min-h-screen bg-[#FAFAF7] p-6">
   
         <p class="mt-4 text-[#2c2c2c]">

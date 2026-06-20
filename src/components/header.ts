@@ -7,11 +7,17 @@ function isActiveLink(path: string): boolean {
 function navLink(path: string, label: string): string {
   const active = isActiveLink(path);
 
+  const baseClasses =
+    "inline-block border-b-4 px-4 py-3 text-base font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2";
+
+  const stateClasses = active
+    ? "border-[#2d6a6a] text-[#2d6a6a]"
+    : "border-transparent text-[#2c2c2c] hover:border-[#7bae7f] hover:text-[#2d6a6a]";
   return `
     <a
       href="${path}"
-      class="${active ? "nav-link nav-link-active" : "nav-link"}"
-      ${active ? 'aria-current="page"' : ""}
+      class="${baseClasses} ${stateClasses}"
+    ${active ? 'aria-current="page"' : ""}
     >
       ${label}
     </a>
