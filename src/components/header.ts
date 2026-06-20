@@ -35,7 +35,7 @@ export function header(): string {
             </div>
 
 
-            <ul class="flex items-center justify-center gap-10 justify-self-center">
+            <ul class="hidden items-center justify-center gap-10 justify-self-center sm:flex">
                 <li>${navLink("#/", "Home")}</li>
                 <li>${navLink("#/login", "Login")}</li>
                 <li>${navLink("#/register", "Register")}</li>
@@ -43,7 +43,7 @@ export function header(): string {
 
               <button 
                 type="button" 
-                class= "justify-self-end rounded-md p-2 text-3xl text-[#2c2c2c] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] md:hidden" 
+                class= "justify-self-end rounded-md p-2 text-3xl text-[#2c2c2c] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] sm:hidden" 
                 aria-label="Open menu" >
                 ☰
             </button>
