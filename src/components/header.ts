@@ -107,13 +107,13 @@ export function header(): string {
                 ${logo()}
           </div>
 
-          <ul class="hidden items-center justify-center gap-10 justify-self-center sm:flex">
+          <ul class="hidden items-center justify-center gap-10 justify-self-center md:flex ">
             ${items}
           </ul>
 
           <button 
             type="button" 
-            class= "justify-self-end rounded-md p-2 text-3xl text-[#2c2c2c] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] sm:hidden"
+            class= "justify-self-end rounded-md p-2 text-3xl text-[#2c2c2c] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] md:hidden"
             data-mobile-menu-button 
             aria-label="Open navigation menu"
             aria-expanded="false"
@@ -125,7 +125,7 @@ export function header(): string {
 
         <nav
           id="mobile-navigation"
-          class="hidden border-t border-gray-200 py-4 md:hidden"
+          class="border-t border-gray-200 py-4 md:hidden"
           aria-label="Mobile navigation"
           hidden
         >

@@ -1,3 +1,4 @@
+import { initHeader } from "../components/header.ts";
 import { layout } from "../components/layout.ts";
 import { homePage } from "../pages/home.ts";
 import { notFoundPage } from "../pages/notFound.ts";
@@ -10,10 +11,16 @@ import { singleListingPage } from "../pages/singlePet.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
-export function initRouter(): void {
+function getRoutes(): string {
+  const hash = window.location.hash || "#/";
+
+  return hash.split("?")[0];
+}
+
+export function renderRoute(): void {
   if (!app) return;
 
-  const route = window.location.hash || "#/";
+  const route = getRoutes();
 
   switch (route) {
     case "#/":
@@ -47,4 +54,13 @@ export function initRouter(): void {
     default:
       app.innerHTML = layout(notFoundPage());
   }
+
+  initHeader();
+}
+
+export function initRouter(): void {
+  renderRoute();
+
+  window.addEventListener("hashchange", renderRoute);
+  window.addEventListener("auth:changed", renderRoute);
 }
