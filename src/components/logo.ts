@@ -7,7 +7,7 @@ export function logo() {
     >
       <span class="text-4xl font-bold tracking-tight">
         <span class="text-[#2d6a6a]">Furever</span>
-        <span class="text-[#2c2c2c]">Home</span>
+        <span class="text-[#2c2c2c] ">Home</span>
       </span>
 
       <span class="relative h-8 w-10 shrink-0">
