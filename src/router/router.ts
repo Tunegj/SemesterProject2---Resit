@@ -8,6 +8,7 @@ import { loginPage } from "../pages/login.ts";
 import { registerPage } from "../pages/register.ts";
 import { profilePage } from "../pages/profile.ts";
 import { singleListingPage } from "../pages/singlePet.ts";
+import { editPetPage } from "../pages/editPet.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -33,6 +34,10 @@ export function renderRoute(): void {
 
     case "#/create":
       app.innerHTML = layout(createPetPage());
+      break;
+
+    case "#/edit":
+      app.innerHTML = layout(editPetPage());
       break;
 
     case "#/login":
