@@ -1,5 +1,7 @@
-const TOKEN_KEY = "accessToken";
-const USER_KEY = "user";
+export const STORAGE_KEYS = {
+  token: "fureverhome:accessToken",
+  user: "fureverhome:user",
+} as const;
 
 export interface StoredUser {
   name?: string;
@@ -8,27 +10,48 @@ export interface StoredUser {
   isAdmin?: boolean;
 }
 
+function isStoredUser(value: unknown): value is StoredUser {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  const user = value as Record<string, unknown>;
+
+  return (
+    (user.name === undefined || typeof user.name === "string") &&
+    (user.email === undefined || typeof user.email === "string") &&
+    (user.role === undefined || typeof user.role === "string") &&
+    (user.isAdmin === undefined || typeof user.isAdmin === "boolean")
+  );
+}
+
 /**
  * Helper functions to manage the access token in local storage, save, get and delete.
  **/
-export function saveToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+export function setToken(token: string): void {
+  localStorage.setItem(STORAGE_KEYS.token, token.trim());
 }
 
 export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+  const token = localStorage.getItem(STORAGE_KEYS.token);
+
+  if (!token?.trim()) {
+    clearToken();
+    return null;
+  }
+  return token;
 }
 
-export function removeToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
+export function clearToken(): void {
+  localStorage.removeItem(STORAGE_KEYS.token);
 }
 
 /**
  * Allows components to subscribe to authentication state changes. The provided callback will be called whenever the authentication state changes (e.g., when a user logs in or out).
  * @param callback - A function that will be called when the authentication state changes.
  */
-export function saveUser(user: StoredUser): void {
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
+export function setUser(user: StoredUser): void {
+  localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
 }
 
 /**
@@ -36,20 +59,27 @@ export function saveUser(user: StoredUser): void {
  * @returns The stored user information or null if not found or invalid.
  */
 export function getUser(): StoredUser | null {
-  const storedUser = localStorage.getItem(USER_KEY);
+  const storedUser = localStorage.getItem(STORAGE_KEYS.user);
 
   if (!storedUser) {
     return null;
   }
 
   try {
-    return JSON.parse(storedUser) as StoredUser;
+    const parsedUser: unknown = JSON.parse(storedUser);
+
+    if (!isStoredUser(parsedUser)) {
+      clearUser();
+      return null;
+    }
+
+    return parsedUser;
   } catch {
-    localStorage.removeItem(USER_KEY);
+    clearUser();
     return null;
   }
 }
 
-export function removeUser(): void {
-  localStorage.removeItem(USER_KEY);
+export function clearUser(): void {
+  localStorage.removeItem(STORAGE_KEYS.user);
 }

@@ -1,4 +1,5 @@
 import { getToken } from "../services/storage";
+import { logout } from "../services/auth.ts";
 import { API_BASE_URL } from "./constants";
 import type { ApiErrorResponse } from "../types/api";
 
@@ -19,6 +20,14 @@ interface ApiClientOptions {
   auth?: boolean;
 }
 
+function handleUnauthorized(): void {
+  logout();
+
+  if (window.location.hash !== "#/login") {
+    window.location.hash = "#/login";
+  }
+}
+
 /**
  * A generic API client function that can be used to make HTTP requests to the backend API. It takes an endpoint and an options object, and returns a promise that resolves to the response data of type T.
  */
@@ -37,6 +46,7 @@ export async function apiClient<T>(
     const token = getToken();
 
     if (!token) {
+      handleUnauthorized();
       throw new Error("You must be logged in to perform this action.");
     }
 
@@ -49,6 +59,11 @@ export async function apiClient<T>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  if (response.status === 401 && auth) {
+    handleUnauthorized();
+    throw new Error("Your session has expired. Please log in again.");
+  }
+
   if (!response.ok) {
     const errorData = await parseJsonSafely<ApiErrorResponse>(response);
 
@@ -60,7 +75,9 @@ export async function apiClient<T>(
     throw new Error(message);
   }
 
-  return parseJsonSafely<T>(response) as Promise<T>;
+  const data = await parseJsonSafely<T>(response);
+
+  return data as T;
 }
 
 async function parseJsonSafely<T>(response: Response): Promise<T | null> {
@@ -70,5 +87,9 @@ async function parseJsonSafely<T>(response: Response): Promise<T | null> {
     return null;
   }
 
-  return JSON.parse(text) as T;
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return null;
+  }
 }

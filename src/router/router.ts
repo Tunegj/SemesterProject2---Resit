@@ -34,8 +34,11 @@ export function renderRoute(): void {
 
   const route = getRoutes();
 
-  const isAdminRoute = route === "#/create" || route === "#/edit";
-  const isGuestRoute = route === "#/login" || route === "#/register";
+  const adminRoutes = ["#/create", "#/edit", "#/delete"];
+  const guestRoutes = ["#/login", "#/register"];
+
+  const isAdminRoute = adminRoutes.includes(route);
+  const isGuestRoute = guestRoutes.includes(route);
 
   if (isAdminRoute && !isAuthenticated()) {
     window.location.hash = "#/login";
