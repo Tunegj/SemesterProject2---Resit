@@ -1,5 +1,5 @@
 import { initHeader } from "../components/header.ts";
-import { layout } from "../components/layout.ts";
+import { layout, initLayout } from "../components/layout.ts";
 import { homePage } from "../pages/home.ts";
 import { notFoundPage } from "../pages/notFound.ts";
 import { listingsPage } from "../pages/listings.ts";
@@ -9,6 +9,7 @@ import { registerPage } from "../pages/register.ts";
 import { profilePage } from "../pages/profile.ts";
 import { singleListingPage } from "../pages/singlePet.ts";
 import { editPetPage } from "../pages/editPet.ts";
+import { isAdmin, isAuthenticated } from "../services/auth.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -18,10 +19,38 @@ function getRoutes(): string {
   return hash.split("?")[0];
 }
 
+function focusMainContent(): void {
+  requestAnimationFrame(() => {
+    const mainContent = document.querySelector<HTMLElement>("#main-content");
+
+    mainContent?.focus({
+      preventScroll: true,
+    });
+  });
+}
+
 export function renderRoute(): void {
   if (!app) return;
 
   const route = getRoutes();
+
+  const isAdminRoute = route === "#/create" || route === "#/edit";
+  const isGuestRoute = route === "#/login" || route === "#/register";
+
+  if (isAdminRoute && !isAuthenticated()) {
+    window.location.hash = "#/login";
+    return;
+  }
+
+  if (isAdminRoute && !isAdmin()) {
+    window.location.hash = "#/";
+    return;
+  }
+
+  if (isGuestRoute && isAuthenticated()) {
+    window.location.hash = "#/";
+    return;
+  }
 
   switch (route) {
     case "#/":
@@ -61,6 +90,8 @@ export function renderRoute(): void {
   }
 
   initHeader();
+  initLayout();
+  focusMainContent();
 }
 
 export function initRouter(): void {

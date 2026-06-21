@@ -1,6 +1,5 @@
 const TOKEN_KEY = "accessToken";
 const USER_KEY = "user";
-const AUTH_CHANGED_EVENT = "auth:changed";
 
 export interface StoredUser {
   name?: string;
@@ -10,10 +9,18 @@ export interface StoredUser {
 }
 
 /**
- * Dispatches a custom event to notify listeners about changes in authentication state.
- */
-function notifyAuthChange(): void {
-  window.dispatchEvent(new CustomEvent(AUTH_CHANGED_EVENT));
+ * Helper functions to manage the access token in local storage, save, get and delete.
+ **/
+export function saveToken(token: string): void {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+export function getToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function removeToken(): void {
+  localStorage.removeItem(TOKEN_KEY);
 }
 
 /**
@@ -43,43 +50,6 @@ export function getUser(): StoredUser | null {
   }
 }
 
-/**
- * Helper functions to manage the access token in local storage, save, get and delete.
- **/
-export function saveToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
-  notifyAuthChange();
-}
-
-export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
-}
-
-/**
- * Checks if the user is currently authenticated by verifying the presence of a valid access token in local storage.
- * @returns A boolean indicating whether the user is authenticated or not.
- */
-export function isAuthenticated(): boolean {
-  return Boolean(getToken());
-}
-
-/** Checks if the currently authenticated user has administrative privileges based on the stored user information in local storage.
- * @returns A boolean indicating whether the user has admin privileges or not.
- */
-export function isAdmin(): boolean {
-  const user = getUser();
-
-  if (!user) {
-    return false;
-  }
-
-  return user.role?.toLowerCase() === "admin" || user.isAdmin === true;
-}
-
-/** Clears the stored access token and user information from local storage, effectively logging the user out. It also dispatches an event to notify listeners about the change in authentication state.
- */
-export function removeToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
+export function removeUser(): void {
   localStorage.removeItem(USER_KEY);
-  notifyAuthChange();
 }

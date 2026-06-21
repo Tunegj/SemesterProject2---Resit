@@ -1,4 +1,4 @@
-import { isAdmin, isAuthenticated, removeToken } from "../services/storage";
+import { isAdmin, isAuthenticated, logout } from "../services/auth.ts";
 import { logo } from "./logo";
 
 interface NavigationLink {
@@ -180,8 +180,23 @@ export function initHeader(): void {
     .querySelectorAll<HTMLButtonElement>("[data-action='logout']")
     .forEach((logoutButton) => {
       logoutButton.addEventListener("click", () => {
-        removeToken();
+        logout();
         window.location.hash = "#/login";
       });
     });
+
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.key !== "Escape" ||
+      !menuButton ||
+      !mobileNavigation ||
+      mobileNavigation.hidden
+    ) {
+      return;
+    }
+
+    mobileNavigation.hidden = true;
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Open navigation menu");
+  });
 }
