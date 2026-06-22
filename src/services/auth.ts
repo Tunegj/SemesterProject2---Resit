@@ -27,10 +27,6 @@ export function getAuthenticatedUser(): StoredUser | null {
   const user = getUser();
 
   if (!token || !user) {
-    return null;
-  }
-
-  if (!token || !user) {
     clearStoredAuth();
     return null;
   }

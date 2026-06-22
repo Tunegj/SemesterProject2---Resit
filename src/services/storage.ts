@@ -10,6 +10,11 @@ export interface StoredUser {
   isAdmin?: boolean;
 }
 
+/**
+ * Type guard to check if a value conforms to the StoredUser interface. This is used to validate the structure of the user data retrieved from local storage.
+ * @param value - The value to check.
+ * @returns A boolean indicating whether the value is a valid StoredUser object or not.
+ */
 function isStoredUser(value: unknown): value is StoredUser {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return false;
@@ -29,7 +34,14 @@ function isStoredUser(value: unknown): value is StoredUser {
  * Helper functions to manage the access token in local storage, save, get and delete.
  **/
 export function setToken(token: string): void {
-  localStorage.setItem(STORAGE_KEYS.token, token.trim());
+  const cleanToken = token.trim();
+
+  if (!cleanToken) {
+    clearToken();
+    return;
+  }
+
+  localStorage.setItem(STORAGE_KEYS.token, cleanToken);
 }
 
 export function getToken(): string | null {
@@ -47,8 +59,8 @@ export function clearToken(): void {
 }
 
 /**
- * Allows components to subscribe to authentication state changes. The provided callback will be called whenever the authentication state changes (e.g., when a user logs in or out).
- * @param callback - A function that will be called when the authentication state changes.
+ * Stores the user profile in local storage.
+ * @param user - The user information to store.
  */
 export function setUser(user: StoredUser): void {
   localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
