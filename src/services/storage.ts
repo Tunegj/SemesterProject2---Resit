@@ -46,6 +46,10 @@ export function setToken(token: string): void {
   }
 }
 
+/**
+ * Retrieves the stored authentication token from local storage. If the token is invalid or not found, it will be removed from local storage and null will be returned.
+ * @returns The stored authentication token or null if not found or invalid.
+ */
 export function getToken(): string | null {
   try {
     const token = localStorage.getItem(STORAGE_KEYS.token);
@@ -61,6 +65,9 @@ export function getToken(): string | null {
   }
 }
 
+/**
+ * Clears the stored authentication token from local storage.
+ */
 export function clearToken(): void {
   try {
     localStorage.removeItem(STORAGE_KEYS.token);
@@ -107,6 +114,9 @@ export function getUser(): StoredUser | null {
   }
 }
 
+/**
+ * Clears the stored user information from local storage.
+ */
 export function clearUser(): void {
   try {
     localStorage.removeItem(STORAGE_KEYS.user);

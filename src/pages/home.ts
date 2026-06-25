@@ -1,5 +1,6 @@
 import { fetchPets } from "../services/pets.ts";
 
+/** Generate the HTML string for a success message displayed on the home page when a user has registered successfully. The message is shown based on the URL query parameter "registered". */
 function registrationSuccessMessage(): string {
   const queryString = window.location.hash.split("?")[1] ?? "";
   const params = new URLSearchParams(queryString);
@@ -19,6 +20,10 @@ function registrationSuccessMessage(): string {
   `;
 }
 
+/**
+ * Generates the HTML string for the home page, which includes a success message if the user has registered successfully and a container for displaying pets. The page also includes a loading message while the pets are being fetched from the API.
+ * @returns An HTML string representing the home page.
+ */
 export function homePage(): string {
   const successMessage = registrationSuccessMessage();
 

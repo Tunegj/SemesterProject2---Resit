@@ -20,6 +20,9 @@ interface ApiClientOptions {
   auth?: boolean;
 }
 
+/**
+ * Handles unauthorized access by logging the user out and redirecting them to the login page.
+ */
 function handleUnauthorized(): void {
   logout();
 
@@ -88,6 +91,11 @@ export async function apiClient<T>(
   return data as T;
 }
 
+/**
+ * Parses the JSON response from the server safely. If the response body is empty or cannot be parsed, it returns null.
+ * @param response - The Response object returned from the fetch call.
+ * @returns A promise that resolves to the parsed JSON data of type T, or null if the response body is empty or cannot be parsed.
+ */
 async function parseJsonSafely<T>(response: Response): Promise<T | null> {
   const text = await response.text();
 

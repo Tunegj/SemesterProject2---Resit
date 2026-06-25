@@ -6,20 +6,31 @@ interface NavigationLink {
   label: string;
 }
 
+/**
+ * Determines if the given path is the active link based on the current route in the URL hash. It compares the provided path with the current route and returns true if they match, indicating that the link is active.
+ * @param path - The path to check against the current route.
+ * @returns A boolean indicating whether the given path is the active link.
+ */
 function isActiveLink(path: string): boolean {
   const currentRoute = window.location.hash.split("?")[0] || "#/";
 
   return currentRoute === path;
 }
 
+/**
+ * Generates an HTML string for a navigation link with the given path and label. The link is styled based on whether it is the active link.
+ * @param path - The path for the navigation link.
+ * @param label - The label for the navigation link.
+ * @returns An HTML string representing the navigation link.
+ */
 function navLink(path: string, label: string): string {
   const active = isActiveLink(path);
 
   const baseClasses =
-    "inline-block border-b-4 px-4 py-3 text-base font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2";
+    "inline-block border-b-4 px-4 py-3 text-base font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 whitespace-nowrap";
 
   const stateClasses = active
-    ? "border-[#2d6a6a] text-[#2d6a6a]"
+    ? "border-[#2d6a6a] text-[#2d6a6a]  whitespace-nowrap"
     : "border-transparent text-[#2c2c2c] hover:border-[#7bae7f] hover:text-[#2d6a6a]";
   return `
     <a
@@ -32,6 +43,10 @@ function navLink(path: string, label: string): string {
   `;
 }
 
+/**
+ * Generates an array of navigation links based on the user's authentication and admin status. The links include Home, Login, Register, Profile, Create Pet, and Edit Pet, depending on the user's state.
+ * @returns An array of NavigationLink objects representing the navigation links for the header.
+ */
 function getNavigationLinks(): NavigationLink[] {
   const links: NavigationLink[] = [
     {
@@ -49,6 +64,10 @@ function getNavigationLinks(): NavigationLink[] {
       {
         path: "#/register",
         label: "Register",
+      },
+      {
+        path: "#/listings",
+        label: "View All Pets",
       },
     );
   }
@@ -76,6 +95,10 @@ function getNavigationLinks(): NavigationLink[] {
   return links;
 }
 
+/**
+ * Generates the HTML string for the navigation items in the header, including links for Home, Login, Register, Profile, Create Pet, and Edit Pet, based on the user's authentication and admin status. If the user is authenticated, a Logout button is also included.
+ * @returns An HTML string representing the navigation items for the header.
+ */
 function navigationItems(): string {
   const links = getNavigationLinks()
     .map(({ path, label }) => `<li>${navLink(path, label)}</li>`)
@@ -104,7 +127,7 @@ export function header(): string {
   const items = navigationItems();
 
   return `
-    <header class="border-b border-gray-200 bg-white shadow-sm">
+    <header class="border-b border-gray-200 bg-[#FAFAF7]">
       <div class="mx-auto max-w-7xl px-4 sm:px-6"> 
         <nav
           class="mx-auto grid max-w-7xl grid-cols-3 items-center px-6 py-5"

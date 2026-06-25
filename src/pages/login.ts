@@ -1,6 +1,10 @@
 import { loginUser } from "../services/login.ts";
 import { saveAuth } from "../services/auth.ts";
 
+/**
+ * Generates the HTML string for the login page, which includes a form for users to enter their email and password. The page also displays a success message if the user has logged out successfully, and provides links to register for a new account if they don't have one. The form includes validation error messages for email and password fields, as well as a general login error message for failed login attempts.
+ * @returns An HTML string representing the login page.
+ */
 export function loginPage(): string {
   const successMessage = logoutSuccessMessage();
 
@@ -110,6 +114,10 @@ export function loginPage(): string {
   `;
 }
 
+/**
+ * Generates the HTML string for the logout success message, which is displayed when the user has logged out successfully. The message is shown based on the URL query parameter "loggedOut".
+ * @returns An HTML string representing the logout success message, or an empty string if the user has not logged out.
+ */
 function logoutSuccessMessage(): string {
   const queryString = window.location.hash.split("?")[1] ?? "";
   const params = new URLSearchParams(queryString);
@@ -129,6 +137,9 @@ function logoutSuccessMessage(): string {
   `;
 }
 
+/**
+ * Initializes the login page by setting up event listeners for the login form submission. It handles form validation, displays error messages for invalid inputs, and manages the login process by calling the loginUser function. If the login is successful, it saves the authentication token and redirects the user to the home page. If there are any errors during login, it displays an appropriate error message.
+ */
 export function initLoginPage(): void {
   const form = document.querySelector<HTMLFormElement>("[data-login-form]");
 

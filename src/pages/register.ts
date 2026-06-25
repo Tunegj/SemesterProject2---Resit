@@ -2,6 +2,9 @@ import { registerUser } from "../services/register.ts";
 import { loginUser } from "../services/login.ts";
 import { saveAuth } from "../services/auth.ts";
 
+/** * Generates the HTML string for the register page, which includes a form for users to enter their username, email, password, and confirm password. The form includes validation error messages for each field, as well as a general registration error message for failed registration attempts. The page also provides a link to the login page for users who already have an account.
+ * @returns An HTML string representing the register page.
+ */
 export function registerPage(): string {
   return `
   <section 
@@ -157,6 +160,8 @@ export function registerPage(): string {
   `;
 }
 
+/** * Initializes the register page by setting up event listeners for the registration form submission. It handles form validation, displays error messages for invalid inputs, and manages the registration process by calling the registerUser function. If the registration is successful, it automatically logs in the user and saves the authentication token. If there are any errors during registration or login, it displays an appropriate error message.
+ */
 export function initRegisterPage(): void {
   const form = document.querySelector<HTMLFormElement>("[data-register-form]");
 

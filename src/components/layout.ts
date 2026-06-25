@@ -1,6 +1,10 @@
 import { header } from "./header";
 import { footer } from "./footer";
 
+/**
+ * Initializes the layout of the application by setting up event listeners for accessibility features, such as skipping to the main content.
+ *  This function should be called once when the application starts to ensure that the layout is properly initialized and accessible.
+ */
 export function initLayout(): void {
   const skipButton = document.querySelector<HTMLButtonElement>(
     "[data-skip-to-main]",
@@ -13,6 +17,11 @@ export function initLayout(): void {
   });
 }
 
+/**
+ * Generates the HTML layout for the application, including the header, main content area, and footer. The provided page content is inserted into the main content area.
+ * @param pageContent - The HTML string representing the content of the current page to be displayed in the main content area.
+ * @returns An HTML string representing the complete layout of the application.
+ */
 export function layout(pageContent: string): string {
   return `
     <button

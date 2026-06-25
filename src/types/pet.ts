@@ -4,7 +4,7 @@
  */
 
 export interface PetImage {
-  url: string;
+  url?: string;
   alt?: string;
 }
 
@@ -29,7 +29,7 @@ export interface Pet {
   description: string;
   adoptionStatus: "available" | "pending" | "adopted";
   location: string;
-  images: PetImage;
+  image?: PetImage | null;
   created: string;
   updated: string;
   owner?: PetOwner;
