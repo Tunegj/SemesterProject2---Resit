@@ -31,7 +31,7 @@ export function loginPage(): string {
           placeholder="Enter your email"
           required
           aria-describedby="login-email-error"
-          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-[#2d6a6a]"
+          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p
@@ -58,7 +58,7 @@ export function loginPage(): string {
           required
           minlength="8"
           aria-describedby="login-password-error"
-          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-[#2d6a6a]"
+          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p

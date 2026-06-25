@@ -11,7 +11,7 @@ function registrationSuccessMessage(): string {
   return `
     <p
     class="mb-6 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-center text-green-800"
-    role= "status"
+    role="status"
     aria-live="polite"
     >
       Registration successful! You are now logged in.
@@ -23,7 +23,9 @@ export function homePage(): string {
   const successMessage = registrationSuccessMessage();
 
   if (successMessage) {
-    window.history.replaceState(null, "", "#/");
+    setTimeout(() => {
+      window.history.replaceState(null, "", "#/");
+    }, 0);
   }
 
   setTimeout(loadPets, 0);

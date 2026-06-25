@@ -44,6 +44,7 @@ export function registerPage(): string {
 
           <p class="mt-1 text-xs text-gray-600">
           Your username cannot contain spaces.
+          </p>
         </div>
 
 
@@ -207,8 +208,14 @@ export function initRegisterPage(): void {
     return;
   }
 
+  let isSubmitting = false;
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
 
     nameError.textContent = "";
     emailError.textContent = "";
@@ -282,6 +289,7 @@ export function initRegisterPage(): void {
       return;
     }
 
+    isSubmitting = true;
     submitButton.disabled = true;
     submitButton.textContent = "Registering...";
 
@@ -325,6 +333,7 @@ export function initRegisterPage(): void {
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Register";
+      isSubmitting = false;
     }
   });
 }
