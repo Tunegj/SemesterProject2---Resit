@@ -30,10 +30,12 @@ export function loginPage(): string {
           autocomplete="email"
           placeholder="Enter your email"
           required
+          aria-describedby="login-email-error"
           class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-[#2d6a6a]"
           />
 
           <p
+          id="login-email-error"
           class="mt-2 text-sm text-[#C95A5A]"
           data-error-for="email"
           aria-live="polite"
@@ -55,10 +57,12 @@ export function loginPage(): string {
           placeholder="Enter your password"
           required
           minlength="8"
+          aria-describedby="login-password-error"
           class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-[#2d6a6a]"
           />
 
           <p
+          id="login-password-error"
           class="mt-2 text-sm text-[#C95A5A]"
           data-error-for="password"
           aria-live="polite"

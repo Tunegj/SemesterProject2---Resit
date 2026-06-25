@@ -4,10 +4,8 @@ export const STORAGE_KEYS = {
 } as const;
 
 export interface StoredUser {
-  name?: string;
-  email?: string;
-  role?: string;
-  isAdmin?: boolean;
+  name: string;
+  email: string;
 }
 
 /**
@@ -23,10 +21,10 @@ function isStoredUser(value: unknown): value is StoredUser {
   const user = value as Record<string, unknown>;
 
   return (
-    (user.name === undefined || typeof user.name === "string") &&
-    (user.email === undefined || typeof user.email === "string") &&
-    (user.role === undefined || typeof user.role === "string") &&
-    (user.isAdmin === undefined || typeof user.isAdmin === "boolean")
+    typeof user.name === "string" &&
+    user.name.trim().length > 0 &&
+    typeof user.email === "string" &&
+    user.email.trim().length > 0
   );
 }
 

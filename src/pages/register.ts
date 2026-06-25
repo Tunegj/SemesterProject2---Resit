@@ -1,4 +1,6 @@
 import { registerUser } from "../services/register.ts";
+import { loginUser } from "../services/login.ts";
+import { saveAuth } from "../services/auth.ts";
 
 export function registerPage(): string {
   return `
@@ -30,9 +32,11 @@ export function registerPage(): string {
           autocomplete="username"
           placeholder="Choose a username"
           required
+          aria-describedby="register-name-error"
           class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
           <p
+          id="register-name-error"
           class="mt-2 text-sm text-[#C95A5A]"
           data-error-for="name"
           aria-live="polite"
@@ -57,10 +61,12 @@ export function registerPage(): string {
           autocomplete="email"
           placeholder="Enter your email"
           required
+          aria-describedby="register-email-error"
           class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p
+          id="register-email-error"
           class="mt-2 text-sm text-[#C95A5A]"
           data-error-for="email"
           aria-live="polite"
@@ -82,10 +88,12 @@ export function registerPage(): string {
           placeholder="Enter your password"
           required
           minlength="8"
+          aria-describedby="register-password-error"
           class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p
+          id="register-password-error"
           class="mt-2 text-sm text-[#C95A5A]"
           data-error-for="password"
           aria-live="polite"
@@ -105,10 +113,12 @@ export function registerPage(): string {
           autocomplete="new-password"
           placeholder="Confirm your password"
           required
+          aria-describedby="register-confirm-password-error"
           class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p
+          id="register-confirm-password-error"
           class="mt-2 text-sm text-[#C95A5A]"
           data-error-for="confirmPassword"
           aria-live="polite"
@@ -126,7 +136,7 @@ export function registerPage(): string {
 
       <button
       type="submit"
-      class="mx-auto mt-6 block rounded-lg bg-[#2d6a6a] px-10 py-3 font-semibold text-white transition-colors hover:bg-[#245656] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+      class="mx-auto mt-6 block rounded-lg bg-[#2d6a6a] px-10 py-3 font-semibold text-white transition-colors hover:bg-[#245656] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#d1d5db] disabled:text-[#4b5563] disabled:hover:bg-[#d1d5db]"
       data-register-submit
       >
         Register
@@ -236,6 +246,10 @@ export function initRegisterPage(): void {
       emailError.textContent = "Please enter a valid email address.";
       emailInput.setAttribute("aria-invalid", "true");
       hasValidationErrors = true;
+    } else if (!email.toLowerCase().endsWith("@stud.noroff.no")) {
+      emailError.textContent = "Email must be a stud.noroff.no address.";
+      emailInput.setAttribute("aria-invalid", "true");
+      hasValidationErrors = true;
     }
 
     if (!password) {
@@ -260,11 +274,18 @@ export function initRegisterPage(): void {
     }
 
     if (hasValidationErrors) {
+      const firstInvalidInput = form.querySelector<HTMLInputElement>(
+        "[aria-invalid='true']",
+      );
+
+      firstInvalidInput?.focus();
       return;
     }
 
     submitButton.disabled = true;
     submitButton.textContent = "Registering...";
+
+    let registrationSuccessful = false;
 
     try {
       await registerUser({
@@ -273,12 +294,34 @@ export function initRegisterPage(): void {
         password,
       });
 
-      window.location.hash = "#/login";
+      registrationSuccessful = true;
+
+      const user = await loginUser({
+        email,
+        password,
+      });
+
+      const authSaved = saveAuth(user.accessToken, {
+        name: user.name,
+        email: user.email,
+      });
+
+      if (!authSaved) {
+        window.location.hash = "#/login?registered=true&autoLoginFailed=true";
+        return;
+      }
+
+      window.location.hash = "#/?registered=true";
     } catch (error) {
+      if (registrationSuccessful) {
+        window.location.hash = "#/login?registered=true&autoLoginFailed=true";
+        return;
+      }
+
       registerError.textContent =
         error instanceof Error
           ? error.message
-          : "An unexpected error occurred. Please try again.";
+          : "Unable to register. Please try again.";
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Register";
