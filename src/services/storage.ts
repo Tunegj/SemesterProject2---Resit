@@ -41,21 +41,34 @@ export function setToken(token: string): void {
     return;
   }
 
-  localStorage.setItem(STORAGE_KEYS.token, cleanToken);
+  try {
+    localStorage.setItem(STORAGE_KEYS.token, cleanToken);
+  } catch {
+    clearToken();
+  }
 }
 
 export function getToken(): string | null {
-  const token = localStorage.getItem(STORAGE_KEYS.token);
+  try {
+    const token = localStorage.getItem(STORAGE_KEYS.token);
 
-  if (!token?.trim()) {
-    clearToken();
+    if (!token?.trim()) {
+      clearToken();
+      return null;
+    }
+
+    return token;
+  } catch {
     return null;
   }
-  return token;
 }
 
 export function clearToken(): void {
-  localStorage.removeItem(STORAGE_KEYS.token);
+  try {
+    localStorage.removeItem(STORAGE_KEYS.token);
+  } catch {
+    // Handle potential errors, e.g., quota exceeded or storage access issues
+  }
 }
 
 /**
@@ -63,7 +76,11 @@ export function clearToken(): void {
  * @param user - The user information to store.
  */
 export function setUser(user: StoredUser): void {
-  localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+  try {
+    localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+  } catch {
+    clearUser();
+  }
 }
 
 /**
@@ -71,13 +88,13 @@ export function setUser(user: StoredUser): void {
  * @returns The stored user information or null if not found or invalid.
  */
 export function getUser(): StoredUser | null {
-  const storedUser = localStorage.getItem(STORAGE_KEYS.user);
-
-  if (!storedUser) {
-    return null;
-  }
-
   try {
+    const storedUser = localStorage.getItem(STORAGE_KEYS.user);
+
+    if (!storedUser) {
+      return null;
+    }
+
     const parsedUser: unknown = JSON.parse(storedUser);
 
     if (!isStoredUser(parsedUser)) {
@@ -93,5 +110,9 @@ export function getUser(): StoredUser | null {
 }
 
 export function clearUser(): void {
-  localStorage.removeItem(STORAGE_KEYS.user);
+  try {
+    localStorage.removeItem(STORAGE_KEYS.user);
+  } catch {
+    // Handle potential errors, e.g., quota exceeded or storage access issues
+  }
 }

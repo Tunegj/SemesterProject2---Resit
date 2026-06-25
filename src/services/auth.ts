@@ -34,7 +34,7 @@ export function getAuthenticatedUser(): StoredUser | null {
   return user;
 }
 
-function isLoggedIn(): boolean {
+export function isLoggedIn(): boolean {
   return getAuthenticatedUser() !== null;
 }
 
@@ -68,11 +68,24 @@ export function saveAuth(token: string, user: StoredUser): boolean {
     return false;
   }
 
-  setToken(cleanedToken);
-  setUser(user);
-  notifyAuthChange();
+  try {
+    setToken(cleanedToken);
+    setUser(user);
 
-  return true;
+    const savedUser = getAuthenticatedUser();
+
+    if (!savedUser) {
+      notifyAuthChange();
+      return false;
+    }
+
+    notifyAuthChange();
+    return true;
+  } catch {
+    clearStoredAuth();
+    notifyAuthChange();
+    return false;
+  }
 }
 
 export function logout(): void {

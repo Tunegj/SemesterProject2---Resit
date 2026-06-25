@@ -53,6 +53,13 @@ function getNavigationLinks(): NavigationLink[] {
     );
   }
 
+  if (isAuthenticated()) {
+    links.push({
+      path: "#/profile",
+      label: "Profile",
+    });
+  }
+
   if (isAuthenticated() && isAdmin()) {
     links.push(
       {

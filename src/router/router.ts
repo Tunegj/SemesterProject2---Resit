@@ -34,11 +34,18 @@ export function renderRoute(): void {
 
   const route = getRoutes();
 
+  const authenticatedRoutes = ["#/profile"];
   const adminRoutes = ["#/create", "#/edit", "#/delete"];
   const guestRoutes = ["#/login", "#/register"];
 
   const isAdminRoute = adminRoutes.includes(route);
   const isGuestRoute = guestRoutes.includes(route);
+  const isAuthenticatedRoute = authenticatedRoutes.includes(route);
+
+  if (isAuthenticatedRoute && !isAuthenticated()) {
+    window.location.hash = "#/login";
+    return;
+  }
 
   if (isAdminRoute && !isAuthenticated()) {
     window.location.hash = "#/login";
