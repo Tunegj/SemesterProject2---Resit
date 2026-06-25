@@ -10,3 +10,5 @@ Fix: I switched to Tailwind v3 and configured tailwind.config.js to include the 
 Outcome: I had hidden both in the HTML element and in the CSS, so when I removed the hidden class from the CSS, the hamburger menu started working as expected.
 
 25.06.2026:
+Couldn't get my logoutSuccessMessage to work, so I pasted the code into ChatGPT and asked for help.
+Outcome: I had put the window.location.hash = "#/login?loggedOut=true"; after logout() in the logout event listener, which caused the page to reload before the message could be displayed. I moved the line before logout() and now the message is displayed correctly.

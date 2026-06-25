@@ -2,13 +2,24 @@ import { loginUser } from "../services/login.ts";
 import { saveAuth } from "../services/auth.ts";
 
 export function loginPage(): string {
+  const successMessage = logoutSuccessMessage();
+
+  if (successMessage) {
+    setTimeout(() => {
+      window.history.replaceState(null, "", "#/login");
+    }, 0);
+  }
+
   return `
   <section 
   class="mx-auto w-full max-w-sm"
   aria-labelledby="login-heading"
+  >
     <h1 id="login-heading" class="text-center text-3xl font-bold text-[#2c2c2c]">
       Login
     </h1>
+
+    ${successMessage}
 
     <form 
     class="mt-8"
@@ -79,7 +90,7 @@ export function loginPage(): string {
 
       <button
       type="submit"
-      class="mx-auto mt-6 block rounded-lg bg-[#2d6a6a] px-10 py-3 font-semibold text-white transition-colors hover:bg-[#245656] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+      class="mx-auto mt-6 block rounded-lg bg-[#2d6a6a] px-10 py-3 font-semibold text-white transition-colors hover:bg-[#245656] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#d1d5db] disabled:text-[#4b5563] disabled:hover:bg-[#d1d5db]"
       data-login-submit
       >
         Login
@@ -96,6 +107,25 @@ export function loginPage(): string {
     >here</a>
     </p>
   </section>
+  `;
+}
+
+function logoutSuccessMessage(): string {
+  const queryString = window.location.hash.split("?")[1] ?? "";
+  const params = new URLSearchParams(queryString);
+
+  if (params.get("loggedOut") !== "true") {
+    return "";
+  }
+
+  return `
+    <p
+    class="mt-6 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-center text-green-800"
+    role="status"
+    aria-live="polite"
+    >
+      You have been logged out successfully.
+    </p>
   `;
 }
 
@@ -134,8 +164,14 @@ export function initLoginPage(): void {
     return;
   }
 
+  let isSubmitting = false;
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
 
     emailError.textContent = "";
     passwordError.textContent = "";
@@ -171,9 +207,14 @@ export function initLoginPage(): void {
     }
 
     if (hasValidationErrors) {
+      const firstInvalidInput = form.querySelector<HTMLInputElement>(
+        "[aria-invalid='true']",
+      );
+      firstInvalidInput?.focus();
       return;
     }
 
+    isSubmitting = true;
     submitButton.disabled = true;
     submitButton.textContent = "Logging in...";
 
@@ -203,6 +244,7 @@ export function initLoginPage(): void {
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Login";
+      isSubmitting = false;
     }
   });
 }

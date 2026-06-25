@@ -187,8 +187,8 @@ export function initHeader(): void {
     .querySelectorAll<HTMLButtonElement>("[data-action='logout']")
     .forEach((logoutButton) => {
       logoutButton.addEventListener("click", () => {
+        window.location.hash = "#/login?loggedOut=true";
         logout();
-        window.location.hash = "#/login";
       });
     });
 
