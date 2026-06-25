@@ -4,8 +4,8 @@ import { homePage } from "../pages/home.ts";
 import { notFoundPage } from "../pages/notFound.ts";
 import { listingsPage } from "../pages/listings.ts";
 import { createPetPage } from "../pages/createPet.ts";
-import { loginPage } from "../pages/login.ts";
-import { registerPage } from "../pages/register.ts";
+import { loginPage, initLoginPage } from "../pages/login.ts";
+import { registerPage, initRegisterPage } from "../pages/register.ts";
 import { profilePage } from "../pages/profile.ts";
 import { singleListingPage } from "../pages/singlePet.ts";
 import { editPetPage } from "../pages/editPet.ts";
@@ -81,10 +81,12 @@ export function renderRoute(): void {
 
     case "#/login":
       app.innerHTML = layout(loginPage());
+      initLoginPage();
       break;
 
     case "#/register":
       app.innerHTML = layout(registerPage());
+      initRegisterPage();
       break;
 
     case "#/profile":

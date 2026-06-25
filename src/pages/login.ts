@@ -1,3 +1,6 @@
+import { loginUser } from "../services/login.ts";
+import { saveAuth } from "../services/auth.ts";
+
 export function loginPage(): string {
   return `
   <section 
@@ -89,7 +92,113 @@ export function loginPage(): string {
     >here</a>
     </p>
   </section>
-
-
   `;
+}
+
+export function initLoginPage(): void {
+  const form = document.querySelector<HTMLFormElement>("[data-login-form]");
+
+  if (!form) {
+    return;
+  }
+
+  const emailInput = form.elements.namedItem("email");
+  const passwordInput = form.elements.namedItem("password");
+
+  const emailError = form.querySelector<HTMLElement>(
+    "[data-error-for='email']",
+  );
+
+  const passwordError = form.querySelector<HTMLElement>(
+    "[data-error-for='password']",
+  );
+
+  const loginError = form.querySelector<HTMLElement>("[data-login-error]");
+
+  const submitButton = form.querySelector<HTMLButtonElement>(
+    "[data-login-submit]",
+  );
+
+  if (
+    !(emailInput instanceof HTMLInputElement) ||
+    !(passwordInput instanceof HTMLInputElement) ||
+    !emailError ||
+    !passwordError ||
+    !loginError ||
+    !submitButton
+  ) {
+    return;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    emailError.textContent = "";
+    passwordError.textContent = "";
+    loginError.textContent = "";
+
+    emailInput.removeAttribute("aria-invalid");
+    passwordInput.removeAttribute("aria-invalid");
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    let hasValidationErrors = false;
+
+    if (!email) {
+      emailError.textContent = "Email is required.";
+      emailInput.setAttribute("aria-invalid", "true");
+      hasValidationErrors = true;
+    } else if (!emailInput.validity.valid) {
+      emailError.textContent = "Please enter a valid email address.";
+      emailInput.setAttribute("aria-invalid", "true");
+      hasValidationErrors = true;
+    }
+
+    if (!password) {
+      passwordError.textContent = "Password is required.";
+      passwordInput.setAttribute("aria-invalid", "true");
+      hasValidationErrors = true;
+    } else if (password.length < 8) {
+      passwordError.textContent =
+        "Password must be at least 8 characters long.";
+      passwordInput.setAttribute("aria-invalid", "true");
+      hasValidationErrors = true;
+    }
+
+    if (hasValidationErrors) {
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Logging in...";
+
+    try {
+      const user = await loginUser({
+        email,
+        password,
+      });
+
+      const authSaved = saveAuth(user.accessToken, {
+        name: user.name,
+        email: user.email,
+      });
+
+      if (!authSaved) {
+        throw new Error(
+          "Your login session could not be saved. Please try again.",
+        );
+      }
+
+      window.location.hash = "#/";
+    } catch (error) {
+      loginError.textContent =
+        error instanceof Error
+          ? error.message
+          : "Unable to login. Please try again.";
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Login";
+    }
+  });
 }
