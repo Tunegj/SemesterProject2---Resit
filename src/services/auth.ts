@@ -50,13 +50,7 @@ export function isAuthenticated(): boolean {
  * @returns A boolean indicating whether the user has admin privileges or not.
  */
 export function isAdmin(): boolean {
-  const user = getAuthenticatedUser();
-
-  if (!user) {
-    return false;
-  }
-
-  return user.role?.toLowerCase() === "admin" || user.isAdmin === true;
+  return isAuthenticated();
 }
 
 export function saveAuth(token: string, user: StoredUser): boolean {
