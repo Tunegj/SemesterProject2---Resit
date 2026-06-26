@@ -91,10 +91,14 @@ export function petCard(pet: Pet): string {
         `;
 
   return `
-        <article class="overflow-hidden rounded-lg bg-white shadow-sm">
+        <article class="overflow-hidden rounded-lg bg-white shadow-sm
+        transition-shadow duration-200 hover:shadow-lg
+        focus-within:ring-2
+        focus-within:ring-offset-2
+        focus-within:ring-[#2d6a6a]">
             <a
                 href="#/listing?id=${encodeURIComponent(pet.id)}"
-                class="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2d6a6a]"
+                class="block focus:outline-none"
             >
                 ${imageMarkup}
 
