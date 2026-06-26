@@ -30,6 +30,100 @@ function petMatchesSearch(pet: Pet, searchTerm: string): boolean {
   );
 }
 
+function getFilterValues(values: unknown[]): string[] {
+  const normalizedValues = values
+    .filter((value): value is string => typeof value === "string")
+    .map((value) => value.trim().toLowerCase())
+    .filter((value) => value.length > 0);
+
+  return [...new Set(normalizedValues)].sort((a, b) => a.localeCompare(b));
+}
+
+function formatFilterLabel(value: string): string {
+  return value.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function populateFilterOptions(
+  selectElement: HTMLSelectElement,
+  values: unknown[],
+): void {
+  const filterValues = getFilterValues(values);
+
+  filterValues.forEach((value) => {
+    const option = document.createElement("option");
+
+    option.value = value;
+    option.textContent = formatFilterLabel(value);
+
+    selectElement.append(option);
+  });
+}
+
+function matchesFilter(value: unknown, selectedValue: string): boolean {
+  if (!selectedValue) return true;
+
+  return (
+    typeof value === "string" && value.trim().toLowerCase() === selectedValue
+  );
+}
+
+function petMatchesFilters(
+  pet: Pet,
+  species: string,
+  size: string,
+  gender: string,
+  adoptionStatus: string,
+): boolean {
+  return (
+    matchesFilter(pet.species, species) &&
+    matchesFilter(pet.size, size) &&
+    matchesFilter(pet.gender, gender) &&
+    matchesFilter(pet.adoptionStatus, adoptionStatus)
+  );
+}
+
+function getCreatedTimestamp(value: unknown): number | null {
+  if (typeof value !== "string") return null;
+
+  const timestamp = Date.parse(value);
+
+  return Number.isNaN(timestamp) ? null : timestamp;
+}
+
+function sortPets(petsToSort: Pet[], sortOption: string): Pet[] {
+  const sortedPets = [...petsToSort];
+
+  if (sortOption === "name-asc") {
+    return sortedPets.sort((petA, petB) => {
+      const nameA = typeof petA.name === "string" ? petA.name.trim() : "";
+      const nameB = typeof petB.name === "string" ? petB.name.trim() : "";
+
+      if (!nameA && !nameB) return 0;
+      if (!nameA) return 1;
+      if (!nameB) return -1;
+
+      return nameA.localeCompare(nameB, undefined, { sensitivity: "base" });
+    });
+  }
+
+  if (sortOption === "newest" || sortOption === "oldest") {
+    return sortedPets.sort((petA, petB) => {
+      const createdA = getCreatedTimestamp(petA.created);
+      const createdB = getCreatedTimestamp(petB.created);
+
+      if (createdA === null && createdB === null) return 0;
+      if (createdA === null) return 1;
+      if (createdB === null) return -1;
+
+      return sortOption === "newest"
+        ? createdB - createdA
+        : createdA - createdB;
+    });
+  }
+
+  return sortedPets;
+}
+
 /**
  * Generates the HTML string for the listings page, which displays a list of pets available for adoption. The page includes a header with a title and description, and a container for the pet listings. The listings container has an aria-busy attribute to indicate loading status, and a status message that updates based on the number of pets available or any errors encountered during data fetching.
  * @returns An HTML string representing the listings page.
@@ -75,7 +169,130 @@ export function listingsPage(): string {
     "
       />
     </div>
-    
+
+    <div
+    class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5"
+    aria-label="Filter and sort pets"
+    >
+      <div>
+        <label
+        for="filter-species"
+        class="mb-2 block font-semibold text-[#2c2c2c]"
+        >
+          Species
+        </label>
+        
+        <select
+        id="filter-species"
+        data-species-filter
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+        >
+          <option value="">All Species</option>
+        </select>
+      </div>
+
+      <div>
+        <label
+        for="filter-size"
+        class="mb-2 block font-semibold text-[#2c2c2c]"
+        >
+          Size
+        </label>
+
+        <select
+        id="filter-size"
+        data-size-filter
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+        >
+          <option value="">All Sizes</option>
+        </select>
+      </div>
+
+      <div>
+        <label
+        for="filter-gender"
+        class="mb-2 block font-semibold text-[#2c2c2c]"
+        >
+        Gender
+        </label>
+
+        <select
+        id="filter-gender"
+        data-gender-filter
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+        >
+          <option value="">
+          All Genders</option>
+        </select>
+      </div>
+
+      <div>
+        <label
+        for="filter-adoption-status"
+        class="mb-2 block font-semibold text-[#2c2c2c]"
+        >
+          Adoption Status
+        </label>
+
+        <select
+        id="filter-adoption-status"
+        data-adoption-status-filter
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+        >
+          <option value="">All Statuses</option>
+          </select>
+      </div>
+
+    <div>
+      <label
+      for="sort-pets"
+      class="mb-2 block font-semibold text-[#2c2c2c]"
+      >
+        Sort By
+      </label>
+
+      <select
+      id="sort-pets"
+      data-pet-sort
+      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+      text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+      focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+      >
+        <option value="">Default</option>
+        <option value="name-asc">Name (A-Z)</option>
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-8">
+    <button
+    type="button"
+    data-reset-filters
+    class="
+    rounded-lg border-2 border-[#2d6a6a] px-4 py-2
+    font-semibold text-[#2d6a6a] 
+    transition-colors duration-200
+    hover:bg-[#2d6a6a] hover:text-white
+    focus:outline-none focus:ring-2
+    focus:ring-[#2d6a6a] focus:ring-offset-2
+    "
+    >
+      Reset Filters
+    </button>
+  </div>
+
+
+
     <div data-listings-container aria-busy="true">
       <p
       data-listings-status
@@ -114,18 +331,76 @@ export async function initListingsPage(): Promise<void> {
     "[data-pet-search-input]",
   );
 
-  if (!listingsContainer || !listingsStatus || !petList || !petSearchInput)
-    return;
+  const speciesFilter = document.querySelector<HTMLSelectElement>(
+    "[data-species-filter]",
+  );
 
+  const sizeFilter =
+    document.querySelector<HTMLSelectElement>("[data-size-filter]");
+
+  const genderFilter = document.querySelector<HTMLSelectElement>(
+    "[data-gender-filter]",
+  );
+
+  const statusFilter = document.querySelector<HTMLSelectElement>(
+    "[data-adoption-status-filter]",
+  );
+
+  const petSort = document.querySelector<HTMLSelectElement>("[data-pet-sort]");
+
+  const resetListingsButton = document.querySelector<HTMLButtonElement>(
+    "[data-reset-filters]",
+  );
+
+  if (
+    !listingsContainer ||
+    !listingsStatus ||
+    !petList ||
+    !petSearchInput ||
+    !speciesFilter ||
+    !sizeFilter ||
+    !genderFilter ||
+    !statusFilter ||
+    !petSort ||
+    !resetListingsButton
+  ) {
+    return;
+  }
   try {
     const pets = await fetchPets();
 
-    const renderPets = (petsToRender: Pet[], searchTerm = ""): void => {
+    populateFilterOptions(
+      speciesFilter,
+      pets.map((pet) => pet.species),
+    );
+
+    populateFilterOptions(
+      sizeFilter,
+      pets.map((pet) => pet.size),
+    );
+
+    populateFilterOptions(
+      genderFilter,
+      pets.map((pet) => pet.gender),
+    );
+
+    populateFilterOptions(
+      statusFilter,
+      pets.map((pet) => pet.adoptionStatus),
+    );
+
+    const renderPets = (
+      petsToRender: Pet[],
+      searchTerm = "",
+      hasActiveFilters = false,
+    ): void => {
       petList.innerHTML = "";
 
+      const hasActiveCriteria = Boolean(searchTerm) || hasActiveFilters;
+
       if (petsToRender.length === 0) {
-        listingsStatus.textContent = searchTerm
-          ? `No pets found matching "${searchTerm}".`
+        listingsStatus.textContent = hasActiveCriteria
+          ? `No pets match your search or selected filters.`
           : "No pets available for adoption at the moment.";
 
         return;
@@ -151,21 +426,72 @@ export async function initListingsPage(): Promise<void> {
           );
         });
 
-      listingsStatus.textContent = searchTerm
-        ? `${petsToRender.length} ${petsToRender.length === 1 ? "pet matches" : "pets match"} "${searchTerm}".`
-        : `${petsToRender.length} pets available for adoption.`;
+      if (hasActiveFilters) {
+        listingsStatus.textContent = `${petsToRender.length} ${
+          petsToRender.length === 1
+            ? "matching pet found"
+            : "matching pets found"
+        }.`;
+      } else if (searchTerm) {
+        listingsStatus.textContent = `${petsToRender.length} ${
+          petsToRender.length === 1 ? "pet matches" : "pets match"
+        } "${searchTerm}".`;
+      } else {
+        listingsStatus.textContent = `${petsToRender.length} pets available for adoption.`;
+      }
     };
 
     renderPets(pets);
 
-    petSearchInput.addEventListener("input", () => {
+    const updateDisplayedPets = (): void => {
       const searchTerm = petSearchInput.value.trim().replace(/\s+/g, " ");
 
-      const filteredPets = pets.filter((pet) =>
-        petMatchesSearch(pet, searchTerm),
+      const selectedSpecies = speciesFilter.value;
+      const selectedSize = sizeFilter.value;
+      const selectedGender = genderFilter.value;
+      const selectedStatus = statusFilter.value;
+
+      const hasActiveFilters = Boolean(
+        selectedSpecies || selectedSize || selectedGender || selectedStatus,
       );
 
-      renderPets(filteredPets, searchTerm);
+      const filteredPets = pets.filter(
+        (pet) =>
+          petMatchesSearch(pet, searchTerm) &&
+          petMatchesFilters(
+            pet,
+            selectedSpecies,
+            selectedSize,
+            selectedGender,
+            selectedStatus,
+          ),
+      );
+
+      const sortedPets = sortPets(filteredPets, petSort.value);
+
+      renderPets(sortedPets, searchTerm, hasActiveFilters);
+    };
+
+    updateDisplayedPets();
+
+    petSearchInput.addEventListener("input", updateDisplayedPets);
+    speciesFilter.addEventListener("change", updateDisplayedPets);
+    sizeFilter.addEventListener("change", updateDisplayedPets);
+    genderFilter.addEventListener("change", updateDisplayedPets);
+    statusFilter.addEventListener("change", updateDisplayedPets);
+    petSort.addEventListener("change", updateDisplayedPets);
+
+    resetListingsButton.addEventListener("click", () => {
+      petSearchInput.value = "";
+      speciesFilter.value = "";
+      genderFilter.value = "";
+      sizeFilter.value = "";
+      statusFilter.value = "";
+      petSort.value = "";
+
+      updateDisplayedPets();
+
+      petSearchInput.focus();
     });
   } catch (error) {
     console.error(error);
