@@ -28,7 +28,13 @@ export async function fetchPetById(id: string): Promise<Pet> {
     API_ENDPOINTS.petsById(id),
   );
 
-  return response.data;
+  const petData: unknown = response.data;
+
+  if (!petData || typeof petData !== "object" || Array.isArray(petData)) {
+    throw new Error("The Pet data received from the server is invalid.");
+  }
+
+  return petData as Pet;
 }
 
 /** Adds a new pet to the API.

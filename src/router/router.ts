@@ -7,7 +7,10 @@ import { createPetPage } from "../pages/createPet.ts";
 import { loginPage, initLoginPage } from "../pages/login.ts";
 import { registerPage, initRegisterPage } from "../pages/register.ts";
 import { profilePage } from "../pages/profile.ts";
-import { singleListingPage } from "../pages/singlePet.ts";
+import {
+  singleListingPage,
+  initSingleListingPage,
+} from "../pages/singlePet.ts";
 import { editPetPage } from "../pages/editPet.ts";
 import { isAdmin, isAuthenticated } from "../services/auth.ts";
 
@@ -103,6 +106,7 @@ export function renderRoute(): void {
 
     case "#/listing":
       app.innerHTML = layout(singleListingPage());
+      initSingleListingPage();
       break;
 
     default:
