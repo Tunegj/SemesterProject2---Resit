@@ -1,28 +1,9 @@
 import { fetchPetById } from "../services/pets.ts";
 import { escapeHtml } from "../utils/escapeHtml.ts";
 import { backButton, initBackButton } from "../components/backButton.ts";
-import { isAdmin } from "../services/auth.ts";
-
-/** * Retrieves the pet listing ID from the URL hash query parameters.
- * @returns The pet listing ID as a string, or null if not found.
- */
-function getListingId(): string | null {
-  const queryString = window.location.hash.split("?")[1] ?? "";
-  const petId = new URLSearchParams(queryString).get("id");
-
-  return petId?.trim() || null;
-}
-
-/** * Validates whether a given string is a valid UUID (Universally Unique Identifier) format.
- * @param id - The string to validate as a UUID.
- * @returns True if the string is a valid UUID, false otherwise.
- */
-function isValidListingId(id: string): boolean {
-  const uuidPattern =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-  return uuidPattern.test(id);
-}
+import { isPetOwner } from "../services/auth.ts";
+import { getPetIdFromHash } from "../utils/getPetIdFromHash.ts";
+import { isValidListingId } from "../utils/isValidListingId.ts";
 
 /** * Retrieves a display-friendly text for a given value, falling back to a specified string if the value is not a valid string.
  * @param value - The value to retrieve display text for.
@@ -122,7 +103,7 @@ export async function initSingleListingPage(): Promise<void> {
 
   if (!listingContainer || !listingStatus || !listingContent) return;
 
-  const petId = getListingId();
+  const petId = getPetIdFromHash();
 
   if (!petId) {
     listingContent.replaceChildren();
@@ -146,7 +127,7 @@ export async function initSingleListingPage(): Promise<void> {
 
   try {
     const pet = await fetchPetById(petId);
-    const showAdminActions = isAdmin();
+    const showAdminActions = isPetOwner(pet.owner?.email);
 
     const petName = getDisplayText(pet.name, "Pet details");
     const breed = getDisplayText(pet.breed, "Unknown breed");

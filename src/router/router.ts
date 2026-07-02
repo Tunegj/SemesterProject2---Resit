@@ -11,7 +11,7 @@ import {
   singleListingPage,
   initSingleListingPage,
 } from "../pages/singlePet.ts";
-import { editPetPage } from "../pages/editPet.ts";
+import { editPetPage, initEditPetPage } from "../pages/editPet.ts";
 import { isAdmin, isAuthenticated } from "../services/auth.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app");
@@ -89,6 +89,7 @@ export function renderRoute(): void {
 
     case "#/edit":
       app.innerHTML = layout(editPetPage());
+      initEditPetPage();
       break;
 
     case "#/login":

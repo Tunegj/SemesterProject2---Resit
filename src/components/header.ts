@@ -86,16 +86,10 @@ function getNavigationLinks(): NavigationLink[] {
   }
 
   if (isAuthenticated() && isAdmin()) {
-    links.push(
-      {
-        path: "#/create",
-        label: "Create Pet",
-      },
-      {
-        path: "#/edit",
-        label: "Edit Pet",
-      },
-    );
+    links.push({
+      path: "#/create",
+      label: "Create Listing",
+    });
   }
 
   return links;

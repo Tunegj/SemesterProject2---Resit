@@ -25,6 +25,21 @@ function clearStoredAuth(): void {
   clearUser();
 }
 
+export function isPetOwner(ownerEmail: unknown): boolean {
+  const currentUser = getAuthenticatedUser();
+
+  if (!currentUser?.email || typeof ownerEmail !== "string") {
+    return false;
+  }
+
+  const currentUserEmail = currentUser.email.trim().toLowerCase();
+  const petOwnerEmail = ownerEmail.trim().toLowerCase();
+
+  return Boolean(
+    currentUserEmail && petOwnerEmail && currentUserEmail === petOwnerEmail,
+  );
+}
+
 /** Retrieves the currently authenticated user from local storage. If there is no valid token or user information, it clears the stored authentication and returns null.
  * @returns The currently authenticated user as a StoredUser object, or null if not authenticated.
  */
