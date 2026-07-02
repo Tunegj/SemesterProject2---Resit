@@ -1,12 +1,20 @@
 import { fetchPetById } from "../services/pets.ts";
 import { escapeHtml } from "../utils/escapeHtml.ts";
 import { backButton, initBackButton } from "../components/backButton.ts";
+import { isAdmin } from "../services/auth.ts";
 
 function getListingId(): string | null {
   const queryString = window.location.hash.split("?")[1] ?? "";
   const petId = new URLSearchParams(queryString).get("id");
 
   return petId?.trim() || null;
+}
+
+function isValidListingId(id: string): boolean {
+  const uuidPattern =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  return uuidPattern.test(id);
 }
 
 function getDisplayText(value: unknown, fallback: string): string {
@@ -91,6 +99,8 @@ export async function initSingleListingPage(): Promise<void> {
   const petId = getListingId();
 
   if (!petId) {
+    listingContent.replaceChildren();
+
     listingStatus.textContent =
       "This pet listing could not be loaded because its ID is missing.";
 
@@ -98,8 +108,20 @@ export async function initSingleListingPage(): Promise<void> {
     return;
   }
 
+  if (!isValidListingId(petId)) {
+    listingContent.replaceChildren();
+
+    listingStatus.textContent =
+      "This pet listing could not be loaded because its ID is invalid.";
+
+    listingContainer.setAttribute("aria-busy", "false");
+    return;
+  }
+
   try {
     const pet = await fetchPetById(petId);
+    const showAdminActions = isAdmin();
+
     const petName = getDisplayText(pet.name, "Pet details");
     const breed = getDisplayText(pet.breed, "Unknown breed");
     const petAge = getDisplayAge(pet.age);
@@ -207,6 +229,24 @@ export async function initSingleListingPage(): Promise<void> {
             ${escapeHtml(petDescription)}
           </p>
         </section>
+
+        ${
+          showAdminActions
+            ? `
+        <div
+        class="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 sm:flex-row"
+        aria-label="Pet management actions"
+        >
+          <a
+          href="#/edit?id=${encodeURIComponent(petId)}"
+          class="inline-flex items-center justify-center rounded-lg bg-[#2d6a6a] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#245858] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2d6a6a]"
+          >
+            Edit Pet
+          </a>
+        </div>
+        `
+            : ""
+        }
       </div>
     </div>
     `;
@@ -256,6 +296,16 @@ export async function initSingleListingPage(): Promise<void> {
     listingStatus.textContent = "";
   } catch (error) {
     console.error(error);
+
+    listingContent.replaceChildren();
+
+    if (
+      error instanceof Error &&
+      error.message.toLowerCase().includes("not found")
+    ) {
+      listingStatus.textContent = "This pet listing could not be found.";
+      return;
+    }
 
     listingStatus.textContent =
       error instanceof Error

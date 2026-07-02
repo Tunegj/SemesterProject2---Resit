@@ -1,18 +1,5 @@
 import type { Pet } from "../types/pet";
-
-/**
- * Escapes HTML special characters in a string to prevent XSS attacks.
- * @param value - The string to escape.
- * @returns The escaped string.
- */
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+import { escapeHtml } from "../utils/escapeHtml";
 
 /**
  * Capitalizes the first letter of each word in a string. If the input is not a valid string, it returns a fallback value.

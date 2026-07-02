@@ -8,6 +8,20 @@ export interface PetImage {
   alt?: string;
 }
 
+export interface PetPayload {
+  name: string;
+  species: string;
+  breed: string;
+  age: number;
+  gender: string;
+  size: string;
+  color: string;
+  description: string;
+  adoptionStatus: "available" | "pending" | "adopted";
+  location: string;
+  image?: PetImage;
+}
+
 interface PetOwner {
   name?: string;
   email?: string;

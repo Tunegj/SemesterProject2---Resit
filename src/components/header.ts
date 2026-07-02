@@ -73,10 +73,16 @@ function getNavigationLinks(): NavigationLink[] {
   }
 
   if (isAuthenticated()) {
-    links.push({
-      path: "#/profile",
-      label: "Profile",
-    });
+    links.push(
+      {
+        path: "#/profile",
+        label: "Profile",
+      },
+      {
+        path: "#/listings",
+        label: "View All Pets",
+      },
+    );
   }
 
   if (isAuthenticated() && isAdmin()) {
