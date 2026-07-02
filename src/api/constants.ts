@@ -1,4 +1,5 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const API_KEY = import.meta.env.VITE_API_KEY;
 
 /**
  * Defines the API endpoints for the application. Each endpoint is represented as a string or a function that returns a string.

@@ -12,3 +12,7 @@ Outcome: I had hidden both in the HTML element and in the CSS, so when I removed
 25.06.2026:
 Couldn't get my logoutSuccessMessage to work, so I pasted the code into ChatGPT and asked for help.
 Outcome: I had put the window.location.hash = "#/login?loggedOut=true"; after logout() in the logout event listener, which caused the page to reload before the message could be displayed. I moved the line before logout() and now the message is displayed correctly.
+
+02.07.2026:
+Problem: When I tried to create a new pet I got an error saying session expired, even though I was logged in. I pasted the code into ChatGPT and asked for help.
+Outcome: I had forgotten to add the Authorization header to the createPet function in pets.ts. I couldn't access the API Key Tool because I have forgotten my password, I sent a request to reset it, but I asked ChatGPT what my options were in case I couldn't access the API Key Tool because of summer holiday at Noroff. ChatGPT suggested I could use a key from a previous project, if it was not exposed publicly anywhere.

@@ -3,7 +3,7 @@ import { layout, initLayout } from "../components/layout.ts";
 import { homePage } from "../pages/home.ts";
 import { notFoundPage } from "../pages/notFound.ts";
 import { listingsPage, initListingsPage } from "../pages/listings.ts";
-import { createPetPage } from "../pages/createPet.ts";
+import { createPetPage, initCreatePetPage } from "../pages/createPet.ts";
 import { loginPage, initLoginPage } from "../pages/login.ts";
 import { registerPage, initRegisterPage } from "../pages/register.ts";
 import { profilePage } from "../pages/profile.ts";
@@ -84,6 +84,7 @@ export function renderRoute(): void {
 
     case "#/create":
       app.innerHTML = layout(createPetPage());
+      initCreatePetPage();
       break;
 
     case "#/edit":

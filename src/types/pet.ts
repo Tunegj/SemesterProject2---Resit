@@ -19,7 +19,10 @@ export interface PetPayload {
   description: string;
   adoptionStatus: "available" | "pending" | "adopted";
   location: string;
-  image?: PetImage;
+  image: {
+    url: string;
+    alt: string;
+  };
 }
 
 interface PetOwner {

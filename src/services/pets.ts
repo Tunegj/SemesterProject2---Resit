@@ -1,7 +1,7 @@
 import { apiClient } from "../api/client";
 import { API_ENDPOINTS } from "../api/constants";
 import type { ApiResponse } from "../types/api";
-import type { Pet } from "../types/pet";
+import type { Pet, PetPayload } from "../types/pet";
 
 /**
  * Fetches the list of pets from the API.
@@ -42,7 +42,7 @@ export async function fetchPetById(id: string): Promise<Pet> {
  * @returns A promise that resolves to the added Pet object.
  * @throws An error if the API response is invalid or if the request fails.
  */
-export async function addPet(petData: unknown): Promise<Pet> {
+export async function addPet(petData: PetPayload): Promise<Pet> {
   const response = await apiClient<ApiResponse<Pet>>(API_ENDPOINTS.pets, {
     method: "POST",
     auth: true,
@@ -58,7 +58,7 @@ export async function addPet(petData: unknown): Promise<Pet> {
  * @returns A promise that resolves to the updated Pet object.
  * @throws An error if the API response is invalid or if the request fails.
  */
-export async function updatePet(id: string, petData: unknown): Promise<Pet> {
+export async function updatePet(id: string, petData: PetPayload): Promise<Pet> {
   const response = await apiClient<ApiResponse<Pet>>(
     API_ENDPOINTS.petsById(id),
     {

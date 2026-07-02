@@ -2,10 +2,21 @@ import { fetchPets } from "../services/pets.ts";
 import { petCard } from "../components/petCard.ts";
 import type { Pet } from "../types/pet.ts";
 
+/**
+ * Normalizes a search value by trimming whitespace, replacing multiple spaces with a single space, and converting to lowercase.
+ * @param value - The search value to normalize.
+ * @returns The normalized search value.
+ */
 function normalizeSearchValue(value: string): string {
   return value.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
+/**
+ * Checks if a pet matches the given search term.
+ * @param pet - The pet to check.
+ * @param searchTerm - The search term to match against.
+ * @returns True if the pet matches the search term, false otherwise.
+ */
 function petMatchesSearch(pet: Pet, searchTerm: string): boolean {
   const normalizedSearchTerm = normalizeSearchValue(searchTerm);
 
@@ -30,6 +41,11 @@ function petMatchesSearch(pet: Pet, searchTerm: string): boolean {
   );
 }
 
+/**
+ * Retrieves unique, normalized filter values from an array of values.
+ * @param values - The array of values to process.
+ * @returns An array of unique, normalized filter values.
+ */
 function getFilterValues(values: unknown[]): string[] {
   const normalizedValues = values
     .filter((value): value is string => typeof value === "string")
@@ -39,6 +55,11 @@ function getFilterValues(values: unknown[]): string[] {
   return [...new Set(normalizedValues)].sort((a, b) => a.localeCompare(b));
 }
 
+/**
+ * Formats a filter label by capitalizing the first letter of each word.
+ * @param value - The filter value to format.
+ * @returns The formatted filter label.
+ */
 function formatFilterLabel(value: string): string {
   return value.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
@@ -59,6 +80,12 @@ function populateFilterOptions(
   });
 }
 
+/**
+ * Checks if a value matches a selected filter value.
+ * @param value - The value to check.
+ * @param selectedValue - The selected filter value to match against.
+ * @returns True if the value matches the selected filter value, false otherwise.
+ */
 function matchesFilter(value: unknown, selectedValue: string): boolean {
   if (!selectedValue) return true;
 
@@ -67,6 +94,15 @@ function matchesFilter(value: unknown, selectedValue: string): boolean {
   );
 }
 
+/**
+ * Checks if a pet matches the selected filter values for species, size, gender, and adoption status.
+ * @param pet - The pet to check.
+ * @param species - The selected species filter value.
+ * @param size - The selected size filter value.
+ * @param gender - The selected gender filter value.
+ * @param adoptionStatus - The selected adoption status filter value.
+ * @returns True if the pet matches all selected filter values, false otherwise.
+ */
 function petMatchesFilters(
   pet: Pet,
   species: string,
@@ -82,6 +118,11 @@ function petMatchesFilters(
   );
 }
 
+/**
+ * Converts a string representation of a date to a timestamp (number of milliseconds since the Unix epoch).
+ * @param value - The string representation of the date.
+ * @returns The timestamp as a number, or null if the input is not a valid date string.
+ */
 function getCreatedTimestamp(value: unknown): number | null {
   if (typeof value !== "string") return null;
 
@@ -90,6 +131,12 @@ function getCreatedTimestamp(value: unknown): number | null {
   return Number.isNaN(timestamp) ? null : timestamp;
 }
 
+/**
+ * Sorts an array of pets based on the specified sort option.
+ * @param petsToSort - The array of pets to sort.
+ * @param sortOption - The sort option to use ("name-asc", "newest", or "oldest").
+ * @returns A new array of pets sorted according to the specified sort option.
+ */
 function sortPets(petsToSort: Pet[], sortOption: string): Pet[] {
   const sortedPets = [...petsToSort];
 

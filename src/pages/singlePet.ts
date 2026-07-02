@@ -3,6 +3,9 @@ import { escapeHtml } from "../utils/escapeHtml.ts";
 import { backButton, initBackButton } from "../components/backButton.ts";
 import { isAdmin } from "../services/auth.ts";
 
+/** * Retrieves the pet listing ID from the URL hash query parameters.
+ * @returns The pet listing ID as a string, or null if not found.
+ */
 function getListingId(): string | null {
   const queryString = window.location.hash.split("?")[1] ?? "";
   const petId = new URLSearchParams(queryString).get("id");
@@ -10,6 +13,10 @@ function getListingId(): string | null {
   return petId?.trim() || null;
 }
 
+/** * Validates whether a given string is a valid UUID (Universally Unique Identifier) format.
+ * @param id - The string to validate as a UUID.
+ * @returns True if the string is a valid UUID, false otherwise.
+ */
 function isValidListingId(id: string): boolean {
   const uuidPattern =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -17,6 +24,11 @@ function isValidListingId(id: string): boolean {
   return uuidPattern.test(id);
 }
 
+/** * Retrieves a display-friendly text for a given value, falling back to a specified string if the value is not a valid string.
+ * @param value - The value to retrieve display text for.
+ * @param fallback - The fallback string to use if the value is not valid.
+ * @returns A string suitable for display, either the trimmed value or the fallback.
+ */
 function getDisplayText(value: unknown, fallback: string): string {
   if (typeof value !== "string") return fallback;
 
@@ -25,6 +37,10 @@ function getDisplayText(value: unknown, fallback: string): string {
   return trimmedValue || fallback;
 }
 
+/** * Retrieves a display-friendly age string for a given value, falling back to "Unknown age" if the value is not a valid number.
+ * @param value - The value to retrieve display age for.
+ * @returns A string representing the age, or "Unknown age" if the value is not valid.
+ */
 function getDisplayAge(value: unknown): string {
   if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
     return "Unknown age";
@@ -33,6 +49,10 @@ function getDisplayAge(value: unknown): string {
   return `${value} ${value === 1 ? "year" : "years"}`;
 }
 
+/** * Generates a fallback image element for a pet when no image is available.
+ * @param petname - The name of the pet.
+ * @returns An HTML string representing the fallback image element.
+ */
 function imageFallback(petname: string): string {
   return `
     <div
@@ -45,6 +65,9 @@ function imageFallback(petname: string): string {
     `;
 }
 
+/** * Generates the HTML for the single pet listing page, including a back button and placeholders for pet details.
+ * @returns An HTML string representing the single pet listing page.
+ */
 export function singleListingPage(): string {
   return `
   <section aria-labelledby="single-listing-heading">
@@ -80,6 +103,9 @@ export function singleListingPage(): string {
   `;
 }
 
+/** * Initializes the single pet listing page by fetching the pet details based on the ID from the URL and populating the page with the retrieved data.
+ * It also sets up the back button functionality and handles error scenarios.
+ */
 export async function initSingleListingPage(): Promise<void> {
   initBackButton("#/listings");
   const listingContainer = document.querySelector<HTMLElement>(

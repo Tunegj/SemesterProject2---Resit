@@ -1,6 +1,6 @@
 import { getToken } from "../services/storage";
 import { logout } from "../services/auth.ts";
-import { API_BASE_URL } from "./constants";
+import { API_BASE_URL, API_KEY } from "./constants";
 import type { ApiErrorResponse } from "../types/api";
 
 /**
@@ -41,7 +41,7 @@ export async function apiClient<T>(
 ): Promise<T> {
   const { method = "GET", body, auth = false } = options;
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
@@ -53,7 +53,14 @@ export async function apiClient<T>(
       throw new Error("You must be logged in to perform this action.");
     }
 
+    if (!API_KEY) {
+      throw new Error(
+        "API key is not defined. Please check your environment variables.",
+      );
+    }
+
     headers.Authorization = `Bearer ${token}`;
+    headers["X-NOROFF-API-KEY"] = API_KEY;
   }
 
   let response: Response;

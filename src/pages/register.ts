@@ -286,9 +286,9 @@ export function initRegisterPage(): void {
     }
 
     if (hasValidationErrors) {
-      const firstInvalidInput = form.querySelector<HTMLInputElement>(
-        "[aria-invalid='true']",
-      );
+      const firstInvalidInput = form.querySelector<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >("[aria-invalid='true']");
 
       firstInvalidInput?.focus();
       return;

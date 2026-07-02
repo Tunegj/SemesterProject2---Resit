@@ -1,3 +1,9 @@
+/**
+ * Generates the HTML for a back button with an optional label.
+ * @param label - The text to display on the button. Defaults to "Back".
+ * @returns A string containing the HTML for the back button.
+ */
+
 export function backButton(label = "Back"): string {
   return `
     <button
@@ -11,6 +17,11 @@ export function backButton(label = "Back"): string {
     `;
 }
 
+/**
+ * Initializes the back button functionality. When the button is clicked, it navigates back in the browser history if possible.
+ * If there is no history to go back to, it redirects to a fallback hash (default is "#/").
+ * @param fallbackHash - The hash to redirect to if there is no history. Defaults to "#/".
+ */
 export function initBackButton(fallbackHash = "#/"): void {
   const button =
     document.querySelector<HTMLButtonElement>("[data-back-button]");
