@@ -48,7 +48,7 @@ export function createPetPage(): string {
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
 
-            <p id="pet-name-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-name-error" class="mt-1 text-sm text-[#7C8595] hidden">
             </p>
           </div>
 
@@ -69,7 +69,7 @@ export function createPetPage(): string {
             aria-describedby="pet-species-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-species-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-species-error" class="mt-1 text-sm text-[#7C8595] hidden">
             </p>
           </div>
 
@@ -90,7 +90,7 @@ export function createPetPage(): string {
             aria-describedby="pet-breed-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-breed-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-breed-error" class="mt-1 text-sm text-[#7C8595] hidden">
             </p>
           </div>
 
@@ -114,7 +114,7 @@ export function createPetPage(): string {
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]  disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
             />
 
-            <p id="pet-age-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-age-error" class="mt-1 text-sm text-[#7C8595] hidden">
             </p>
           
 
@@ -162,7 +162,7 @@ export function createPetPage(): string {
               <option value="male">Male</option>
               <option value="unknown">Unknown</option>
             </select>
-            <p id="pet-gender-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-gender-error" class="mt-1 text-sm text-[#7C8595] hidden">
             </p>
           </div>
 
@@ -187,7 +187,7 @@ export function createPetPage(): string {
               <option value="medium">Medium</option>
               <option value="large">Large</option>
             </select>
-            <p id="pet-size-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-size-error" class="mt-1 text-sm text-[#7C8595] hidden">
             </p>
           </div>
 
@@ -208,7 +208,7 @@ export function createPetPage(): string {
             aria-describedby="pet-color-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-color-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-color-error" class="mt-1 text-sm text-[#7C8595] hidden">
             </p>
           </div>
 
@@ -233,7 +233,7 @@ export function createPetPage(): string {
               <option value="pending">Pending</option>
               <option value="adopted">Adopted</option>
             </select>
-            <p id="pet-adoption-status-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-adoption-status-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -338,7 +338,7 @@ export function createPetPage(): string {
 
         <button
         type="submit"
-        class="rounded-md bg-[#2d6a6a] px-6 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+        class="rounded-xl bg-[#2d6a6a] px-4 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
         >
         Create Pet Listing
         </button>

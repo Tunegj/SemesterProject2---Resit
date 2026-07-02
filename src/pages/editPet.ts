@@ -1,13 +1,16 @@
-import { fetchPetById, updatePet } from "../services/pets.ts";
+import { fetchPetById, updatePet, deletePet } from "../services/pets.ts";
 import { getPetIdFromHash } from "../utils/getPetIdFromHash.ts";
 import { isValidListingId } from "../utils/isValidListingId.ts";
 import type { Pet, PetPayload } from "../types/pet.ts";
 import { escapeHtml } from "../utils/escapeHtml.ts";
 import { isPetOwner } from "../services/auth.ts";
+import { backButton, initBackButton } from "../components/backButton.ts";
 
 export function editPetPage(): string {
   return `
     <section aria-labelledby="edit-pet-heading">
+    ${backButton()}
+
       <header class="mb-8">
         <h1 id="edit-pet-heading" class="text-3xl font-bold text-[#2d6a6a]">
           Edit Pet
@@ -81,7 +84,7 @@ function editPetForm(pet: Pet): string {
 
           <p
           id="pet-name-error"
-          class="mt-1 hidden text-sm text-red-700"
+          class="mt-1 hidden text-sm text-[#C95A5A]"
           ></p>
         </div>
 
@@ -104,7 +107,7 @@ function editPetForm(pet: Pet): string {
 
           <p
           id="pet-species-error"
-          class="mt-1 hidden text-sm text-red-700"
+          class="mt-1 hidden text-sm text-[#C95A5A]"
           ></p>
         </div>
 
@@ -127,7 +130,7 @@ function editPetForm(pet: Pet): string {
 
           <p
           id="pet-breed-error"
-          class="mt-1 hidden text-sm text-red-700"
+          class="mt-1 hidden text-sm text-[#C95A5A]"
           ></p>
         </div>
 
@@ -153,7 +156,7 @@ function editPetForm(pet: Pet): string {
 
           <p
           id="pet-age-error"
-          class="mt-1 hidden text-sm text-red-700"
+          class="mt-1 hidden text-sm text-[#C95A5A]"
           ></p>
       
 
@@ -208,7 +211,7 @@ function editPetForm(pet: Pet): string {
               <option value="male" ${normalizedGender === "male" ? "selected" : ""}>Male</option>
               <option value="unknown" ${normalizedGender === "unknown" ? "selected" : ""}>Unknown</option>
             </select>
-            <p id="pet-gender-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-gender-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -244,7 +247,7 @@ function editPetForm(pet: Pet): string {
               </option>
             </select>
 
-            <p id="pet-size-error" class="mt-1 hidden text-sm text-red-700"></p>
+            <p id="pet-size-error" class="mt-1 hidden text-sm text-[#C95A5A]"></p>
           </div>
 
           <div>
@@ -263,7 +266,7 @@ function editPetForm(pet: Pet): string {
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
 
-            <p id="pet-color-error" class="mt-1 hidden text-sm text-red-700"></p>
+            <p id="pet-color-error" class="mt-1 hidden text-sm text-[#C95A5A]"></p>
           </div>
 
           <div>
@@ -312,7 +315,7 @@ function editPetForm(pet: Pet): string {
 
             <p
               id="pet-adoption-status-error"
-              class="mt-1 hidden text-sm text-red-700"
+              class="mt-1 hidden text-sm text-[#C95A5A]"
             ></p>
           </div>
 
@@ -332,7 +335,7 @@ function editPetForm(pet: Pet): string {
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
 
-            <p id="pet-location-error" class="mt-1 hidden text-sm text-red-700"></p>
+            <p id="pet-location-error" class="mt-1 hidden text-sm text-[#C95A5A]"></p>
           </div>
 
           <div>
@@ -357,7 +360,7 @@ function editPetForm(pet: Pet): string {
 
             <p
               id="pet-image-url-error"
-              class="mt-1 hidden text-sm text-red-700"
+              class="mt-1 hidden text-sm text-[#C95A5A]"
             ></p>
           </div>
 
@@ -383,7 +386,7 @@ function editPetForm(pet: Pet): string {
 
             <p
               id="pet-image-alt-error"
-              class="mt-1 hidden text-sm text-red-700"
+              class="mt-1 hidden text-sm text-[#C95A5A]"
             ></p>
 
             <p id="pet-image-alt-help" class="mt-2 text-sm text-gray-600">
@@ -411,7 +414,7 @@ function editPetForm(pet: Pet): string {
 
             <p
               id="pet-description-error"
-              class="mt-1 hidden text-sm text-red-700"
+              class="mt-1 hidden text-sm text-[#C95A5A]"
             ></p>
           </div>
         </div>
@@ -424,11 +427,83 @@ function editPetForm(pet: Pet): string {
 
         <button
           type="submit"
-          class="rounded-md bg-[#2d6a6a] px-6 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+          class="rounded-xl bg-[#2d6a6a] px-4 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
         >
           Save Changes
         </button>
     </form>
+
+    <section
+    class="mt-12 border-t border-[#C95A5A] pt-8"
+    aria-labelledby="delete-pet-heading"
+    >
+      <h2
+      id="delete-pet-heading"
+      class="text-2xl font-bold text-[#C95A5A]"
+      >
+      Delete Listing
+      </h2>
+
+      <p class="mt-3 max-w-2xl text-[#2c2c2c]">
+        Permanently delete this listing. This action cannot be undone.
+      </p>
+    
+    <button
+    type="button"
+    data-open-delete-modal
+    class="mt-5 rounded-xl bg-red-700 px-4 py-3 font-semibold text-white transition hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+    >
+      Delete Listing
+    </button>
+    </section>
+
+    <dialog
+    data-delete-pet-modal
+    aria-labelledby="delete-modal-heading"
+    aria-describedby="delete-modal-description"
+    class="w-[calc(100%-2rem)] max-w-lg rounded-lg p-0 shadow-xl backdrop:bg-black/50"
+    >
+      <div class="p-6">
+        <h2
+        id="delete-modal-heading"
+        class="text-2xl font-bold text-red-700"
+        >
+          Delete ${escapeHtml(pet.name ?? "this pet")}?
+        </h2>
+
+        <p
+        id="delete-modal-description"
+        class="mt-4 text-[#2c2c2c]"
+        >
+          Are you sure you want to permanently delete this listing? This action cannot be undone.
+        </p>
+
+        <p
+       data-delete-pet-status
+       role="status"
+        aria-live="polite"
+        class="mt-4 hidden"
+        ></p>
+
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            data-cancel-delete
+            class="rounded-xl bg-gray-200 px-4 py-3 font-semibold text-[#2c2c2c] transition hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            data-confirm-delete
+            class="rounded-xl bg-red-700 px-4 py-3 font-semibold text-white transition hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+          >
+            Delete Listing
+          </button>
+        </div>
+      </div>
+    </dialog>
   `;
 }
 
@@ -483,6 +558,22 @@ function initEditPetForm(petId: string): void {
     "button[type='submit']",
   );
 
+  const deleteModal = document.querySelector<HTMLDialogElement>(
+    "[data-delete-pet-modal]",
+  );
+  const openDeleteModalButton = document.querySelector<HTMLButtonElement>(
+    "[data-open-delete-modal]",
+  );
+  const cancelDeleteButton = document.querySelector<HTMLButtonElement>(
+    "[data-cancel-delete]",
+  );
+  const confirmDeleteButton = document.querySelector<HTMLButtonElement>(
+    "[data-confirm-delete]",
+  );
+  const deleteStatus = document.querySelector<HTMLParagraphElement>(
+    "[data-delete-pet-status]",
+  );
+
   if (
     !ageInput ||
     !ageUnknownCheckbox ||
@@ -511,10 +602,18 @@ function initEditPetForm(petId: string): void {
     !imageAltError ||
     !descriptionError ||
     !submitStatus ||
-    !submitButton
+    !submitButton ||
+    !deleteModal ||
+    !openDeleteModalButton ||
+    !cancelDeleteButton ||
+    !confirmDeleteButton ||
+    !deleteStatus
   ) {
     return;
   }
+
+  const defaultDeleteButtonText =
+    confirmDeleteButton.textContent?.trim() || "Yes, Delete Listing";
 
   type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
@@ -584,6 +683,64 @@ function initEditPetForm(petId: string): void {
   ageUnknownCheckbox.addEventListener("change", updateAgeField);
 
   updateAgeField();
+
+  openDeleteModalButton.addEventListener("click", () => {
+    deleteStatus.textContent = "";
+    deleteStatus.className = "mt-4 hidden";
+
+    deleteModal.showModal();
+  });
+
+  cancelDeleteButton.addEventListener("click", () => {
+    deleteModal.close();
+  });
+
+  deleteModal.addEventListener("click", (event) => {
+    if (event.target === deleteModal) {
+      deleteModal.close();
+    }
+  });
+
+  confirmDeleteButton.addEventListener("click", async () => {
+    confirmDeleteButton.disabled = true;
+    confirmDeleteButton.textContent = "Deleting...";
+
+    cancelDeleteButton.disabled = true;
+    openDeleteModalButton.disabled = true;
+    submitButton.disabled = true;
+
+    deleteStatus.textContent = "";
+    deleteStatus.className = "mt-4 hidden";
+
+    try {
+      await deletePet(petId);
+
+      deleteStatus.textContent =
+        "This pet listing has been deleted successfully.";
+
+      deleteStatus.className =
+        "mt-4 rounded-md border border-green-700 bg-green-50 p-4 text-green-800";
+
+      window.setTimeout(() => {
+        window.location.hash = "#/listings";
+      }, 800);
+    } catch (error) {
+      deleteStatus.textContent =
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred while deleting the pet listing. Please try again later.";
+
+      deleteStatus.className =
+        "mt-4 rounded-md border border-red-700 bg-red-50 p-4 text-red-800";
+
+      confirmDeleteButton.disabled = false;
+      confirmDeleteButton.textContent = defaultDeleteButtonText;
+
+      cancelDeleteButton.disabled = false;
+      openDeleteModalButton.disabled = false;
+      submitButton.disabled = false;
+    }
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -735,6 +892,7 @@ function initEditPetForm(petId: string): void {
 
     submitButton.disabled = true;
     submitButton.textContent = "Saving...";
+    openDeleteModalButton.disabled = true;
 
     try {
       const updatedPet = await updatePet(petId, petData);
@@ -758,6 +916,7 @@ function initEditPetForm(petId: string): void {
 
       submitButton.disabled = false;
       submitButton.textContent = defaultSubmitText;
+      openDeleteModalButton.disabled = false;
     }
   });
 }
@@ -778,6 +937,13 @@ export async function initEditPetPage(): Promise<void> {
   if (!container || !status || !formContainer) return;
 
   const petId = getPetIdFromHash();
+
+  const backPath =
+    petId && isValidListingId(petId)
+      ? `#/listing?id=${encodeURIComponent(petId)}`
+      : "#/listings";
+
+  initBackButton(backPath);
 
   if (!petId) {
     container.setAttribute("aria-busy", "false");
@@ -801,7 +967,7 @@ export async function initEditPetPage(): Promise<void> {
 
       status.textContent =
         "You do not have permission to edit this pet. Only the owner can edit the pet details.";
-      status.classList.add("text-red-600");
+      status.classList.add("text-[#C95A5A]");
       formContainer.replaceChildren();
       return;
     }
@@ -813,7 +979,7 @@ export async function initEditPetPage(): Promise<void> {
     initEditPetForm(petId);
   } catch (error) {
     container.setAttribute("aria-busy", "false");
-    status.classList.add("text-red-600");
+    status.classList.add("text-[#C95A5A]");
 
     if (error instanceof TypeError) {
       status.textContent =
