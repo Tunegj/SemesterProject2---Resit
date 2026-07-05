@@ -6,9 +6,9 @@ import { saveAuth } from "../services/auth.ts";
  * @returns An HTML string representing the login page.
  */
 export function loginPage(): string {
-  const successMessage = logoutSuccessMessage();
+  const feedbackmessage = loginFeedbackMessage();
 
-  if (successMessage) {
+  if (feedbackmessage) {
     setTimeout(() => {
       window.history.replaceState(null, "", "#/login");
     }, 0);
@@ -23,7 +23,7 @@ export function loginPage(): string {
       Login
     </h1>
 
-    ${successMessage}
+    ${feedbackmessage}
 
     <form 
     class="mt-8"
@@ -115,18 +115,15 @@ export function loginPage(): string {
 }
 
 /**
- * Generates the HTML string for the logout success message, which is displayed when the user has logged out successfully. The message is shown based on the URL query parameter "loggedOut".
- * @returns An HTML string representing the logout success message, or an empty string if the user has not logged out.
+ * Generates the HTML string for the login feedback message, which is displayed based on the URL query parameters "loggedOut" or "reason".
+ * @returns An HTML string representing the login feedback message, or an empty string if there is no feedback to show.
  */
-function logoutSuccessMessage(): string {
+function loginFeedbackMessage(): string {
   const queryString = window.location.hash.split("?")[1] ?? "";
   const params = new URLSearchParams(queryString);
 
-  if (params.get("loggedOut") !== "true") {
-    return "";
-  }
-
-  return `
+  if (params.get("loggedOut") === "true") {
+    return `
     <p
     class="mt-6 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-center text-green-800"
     role="status"
@@ -135,6 +132,21 @@ function logoutSuccessMessage(): string {
       You have been logged out successfully.
     </p>
   `;
+  }
+
+  if (params.get("reason") === "protected") {
+    return `
+    <p
+    class="mt-6 rounded-md border border-[#C95A5A] bg-[#FEE2E2] px-4 py-3 text-center text-[#C95A5A]"
+    role="status"
+    aria-live="polite"
+    >
+      You must be logged in to access that page.
+    </p>
+  `;
+  }
+
+  return "";
 }
 
 /**

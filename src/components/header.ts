@@ -44,7 +44,7 @@ function navLink(path: string, label: string): string {
 }
 
 /**
- * Generates an array of navigation links based on the user's authentication and admin status. The links include Home, Login, Register, Profile, Create Pet, and Edit Pet, depending on the user's state.
+ * Generates an array of navigation links based on the user's authentication and admin status. The links include Home, Login, Register, Profile and Create Listing depending on the user's state.
  * @returns An array of NavigationLink objects representing the navigation links for the header.
  */
 function getNavigationLinks(): NavigationLink[] {
@@ -96,7 +96,7 @@ function getNavigationLinks(): NavigationLink[] {
 }
 
 /**
- * Generates the HTML string for the navigation items in the header, including links for Home, Login, Register, Profile, Create Pet, and Edit Pet, based on the user's authentication and admin status. If the user is authenticated, a Logout button is also included.
+ * Generates the HTML string for the navigation items in the header, including links for Home, Login, Register, Profile and Create Listing based on the user's authentication and admin status. If the user is authenticated, a Logout button is also included.
  * @returns An HTML string representing the navigation items for the header.
  */
 function navigationItems(): string {

@@ -127,7 +127,7 @@ export async function initSingleListingPage(): Promise<void> {
 
   try {
     const pet = await fetchPetById(petId);
-    const showAdminActions = isPetOwner(pet.owner?.email);
+    const showOwnerActions = isPetOwner(pet.owner?.email);
 
     const petName = getDisplayText(pet.name, "Pet details");
     const breed = getDisplayText(pet.breed, "Unknown breed");
@@ -238,7 +238,7 @@ export async function initSingleListingPage(): Promise<void> {
         </section>
 
         ${
-          showAdminActions
+          showOwnerActions
             ? `
         <div
         class="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 sm:flex-row"
