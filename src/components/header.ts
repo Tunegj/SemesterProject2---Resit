@@ -6,10 +6,49 @@ interface NavigationLink {
   label: string;
 }
 
+let hasEscapeListener = false;
+
 /**
- * Determines if the given path is the active link based on the current route in the URL hash. It compares the provided path with the current route and returns true if they match, indicating that the link is active.
- * @param path - The path to check against the current route.
- * @returns A boolean indicating whether the given path is the active link.
+ * Closes the mobile navigation menu by hiding it and updating the menu button's attributes.
+ */
+function closeMobileNavigationMenu(
+  menuButton: HTMLButtonElement,
+  mobileNavigation: HTMLElement,
+  returnFocus = false,
+): void {
+  mobileNavigation.hidden = true;
+  menuButton.setAttribute("aria-expanded", "false");
+  menuButton.setAttribute("aria-label", "Open navigation menu");
+
+  if (returnFocus) {
+    menuButton.focus();
+  }
+}
+
+/**
+ * Handles Escape presses by closing the open mobile navigation
+ * and returning focus to the menu button.
+ */
+function handleEscapeKey(event: KeyboardEvent): void {
+  if (event.key !== "Escape") {
+    return;
+  }
+
+  const menuButton = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-menu-button]",
+  );
+  const mobileNavigation =
+    document.querySelector<HTMLElement>("#mobile-navigation");
+
+  if (!menuButton || !mobileNavigation || mobileNavigation.hidden) {
+    return;
+  }
+
+  closeMobileNavigationMenu(menuButton, mobileNavigation, true);
+}
+
+/**
+ * Checks whether a navigation path matches the current route.
  */
 function isActiveLink(path: string): boolean {
   const currentRoute = window.location.hash.split("?")[0] || "#/";
@@ -18,10 +57,7 @@ function isActiveLink(path: string): boolean {
 }
 
 /**
- * Generates an HTML string for a navigation link with the given path and label. The link is styled based on whether it is the active link.
- * @param path - The path for the navigation link.
- * @param label - The label for the navigation link.
- * @returns An HTML string representing the navigation link.
+ * Creates a navifation link and marks it as current when active.
  */
 function navLink(path: string, label: string): string {
   const active = isActiveLink(path);
@@ -30,7 +66,7 @@ function navLink(path: string, label: string): string {
     "inline-block border-b-4 px-4 py-3 text-base font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 whitespace-nowrap";
 
   const stateClasses = active
-    ? "border-[#2d6a6a] text-[#2d6a6a]  whitespace-nowrap"
+    ? "border-[#2d6a6a] text-[#2d6a6a]"
     : "border-transparent text-[#2c2c2c] hover:border-[#7bae7f] hover:text-[#2d6a6a]";
   return `
     <a
@@ -44,10 +80,12 @@ function navLink(path: string, label: string): string {
 }
 
 /**
- * Generates an array of navigation links based on the user's authentication and admin status. The links include Home, Login, Register, Profile and Create Listing depending on the user's state.
- * @returns An array of NavigationLink objects representing the navigation links for the header.
+ * Returns the links available for the current authentication state.
  */
-function getNavigationLinks(): NavigationLink[] {
+function getNavigationLinks(
+  authenticated: boolean,
+  admin: boolean,
+): NavigationLink[] {
   const links: NavigationLink[] = [
     {
       path: "#/",
@@ -55,7 +93,12 @@ function getNavigationLinks(): NavigationLink[] {
     },
   ];
 
-  if (!isAuthenticated()) {
+  if (authenticated) {
+    links.push({
+      path: "#/profile",
+      label: "Profile",
+    });
+  } else {
     links.push(
       {
         path: "#/login",
@@ -65,27 +108,15 @@ function getNavigationLinks(): NavigationLink[] {
         path: "#/register",
         label: "Register",
       },
-      {
-        path: "#/listings",
-        label: "View All Pets",
-      },
     );
   }
 
-  if (isAuthenticated()) {
-    links.push(
-      {
-        path: "#/profile",
-        label: "Profile",
-      },
-      {
-        path: "#/listings",
-        label: "View All Pets",
-      },
-    );
-  }
+  links.push({
+    path: "#/listings",
+    label: "View All Pets",
+  });
 
-  if (isAuthenticated() && isAdmin()) {
+  if (admin) {
     links.push({
       path: "#/create",
       label: "Create Listing",
@@ -96,15 +127,17 @@ function getNavigationLinks(): NavigationLink[] {
 }
 
 /**
- * Generates the HTML string for the navigation items in the header, including links for Home, Login, Register, Profile and Create Listing based on the user's authentication and admin status. If the user is authenticated, a Logout button is also included.
- * @returns An HTML string representing the navigation items for the header.
- */
+ * Creates the navigation list items, including logout when authenticated.
+ * */
 function navigationItems(): string {
-  const links = getNavigationLinks()
+  const authenticated = isAuthenticated();
+  const admin = authenticated && isAdmin();
+
+  const links = getNavigationLinks(authenticated, admin)
     .map(({ path, label }) => `<li>${navLink(path, label)}</li>`)
     .join("");
 
-  if (!isAuthenticated()) {
+  if (!authenticated) {
     return links;
   }
 
@@ -114,7 +147,7 @@ function navigationItems(): string {
   <li>
     <button
       type="button"
-      class="block w-full rounded-md border-b-4 border-transparent px-3 py-3 text-left text-base font-semibold text-[#2c2c2c] transition-colors hover:border-[#7bae7f] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 md:text-center"
+      class="block w-full rounded-md border-b-4 border-transparent px-3 py-3 text-left text-base font-semibold text-[#2c2c2c] transition-colors hover:border-[#7bae7f] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 lg:text-center"
       data-action="logout"
     >
       Logout
@@ -123,6 +156,9 @@ function navigationItems(): string {
 `;
 }
 
+/**
+ * Creates the shared responsive application header.
+ */
 export function header(): string {
   const items = navigationItems();
 
@@ -130,32 +166,32 @@ export function header(): string {
     <header class="border-b border-gray-200 bg-[#FAFAF7]">
       <div class="mx-auto max-w-7xl px-4 sm:px-6"> 
         <nav
-          class="mx-auto grid max-w-7xl grid-cols-3 items-center px-6 py-5"
+          class="flex items-center justify-between gap-6 px-2 py-5"
           aria-label="Main navigation"
         >
-          <div class="justify-self-start">
-                ${logo()}
+          <div class="shrink-0">
+            ${logo()}
           </div>
 
-          <ul class="hidden items-center justify-center gap-10 justify-self-center md:flex ">
+          <ul class="hidden items-center justify-end gap-2 lg:flex xl:gap-6">
             ${items}
           </ul>
 
           <button 
             type="button" 
-            class= "justify-self-end rounded-md p-2 text-3xl text-[#2c2c2c] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] md:hidden"
+            class="shrink-0 rounded-md p-2 text-3xl text-[#2c2c2c] hover:text-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] lg:hidden"
             data-mobile-menu-button 
             aria-label="Open navigation menu"
             aria-expanded="false"
             aria-controls="mobile-navigation"
           >
             <span aria-hidden="true">☰</span>
-            </button>
+          </button>
         </nav>
 
         <nav
           id="mobile-navigation"
-          class="border-t border-gray-200 py-4 md:hidden"
+          class="border-t border-gray-200 py-4 lg:hidden"
           aria-label="Mobile navigation"
           hidden
         >
@@ -168,6 +204,10 @@ export function header(): string {
     `;
 }
 
+/**
+ * Initializes mobile-navigation and logout interactions.
+ * The global Escape key listener is only added once, even if this function is called multiple times.
+ */
 export function initHeader(): void {
   const menuButton = document.querySelector<HTMLButtonElement>(
     "[data-mobile-menu-button]",
@@ -199,10 +239,7 @@ export function initHeader(): void {
         if (!menuButton || !mobileNavigation) {
           return;
         }
-
-        menuButton.setAttribute("aria-expanded", "false");
-        menuButton.setAttribute("aria-label", "Open navigation menu");
-        mobileNavigation.hidden = true;
+        closeMobileNavigationMenu(menuButton, mobileNavigation);
       });
     });
 
@@ -215,18 +252,8 @@ export function initHeader(): void {
       });
     });
 
-  document.addEventListener("keydown", (event) => {
-    if (
-      event.key !== "Escape" ||
-      !menuButton ||
-      !mobileNavigation ||
-      mobileNavigation.hidden
-    ) {
-      return;
-    }
-
-    mobileNavigation.hidden = true;
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.setAttribute("aria-label", "Open navigation menu");
-  });
+  if (!hasEscapeListener) {
+    document.addEventListener("keydown", handleEscapeKey);
+    hasEscapeListener = true;
+  }
 }

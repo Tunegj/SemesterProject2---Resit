@@ -27,15 +27,15 @@ function getRoutes(): string {
 
 /** Focuses the main content area of the page by selecting the element with the ID "main-content" and calling the focus method on it. This is done to improve accessibility and ensure that keyboard users can easily navigate to the main content after a route change. The focus action is wrapped in a requestAnimationFrame to ensure it occurs after the DOM has been updated.
  */
-function focusMainContent(): void {
-  requestAnimationFrame(() => {
-    const mainContent = document.querySelector<HTMLElement>("#main-content");
+// function focusMainContent(): void {
+//   requestAnimationFrame(() => {
+//     const mainContent = document.querySelector<HTMLElement>("#main-content");
 
-    mainContent?.focus({
-      preventScroll: true,
-    });
-  });
-}
+//     mainContent?.focus({
+//       preventScroll: true,
+//     });
+//   });
+// }
 
 /** Renders the appropriate page content based on the current route in the URL hash. It checks the user's authentication and admin status to determine if they have access to certain routes. If the user is not authorized to access a route, they are redirected to the login page or home page as appropriate. The function updates the innerHTML of the app container with the layout and page content, and initializes necessary components such as the header and layout. It also sets up event listeners for accessibility features.
  */
@@ -118,7 +118,7 @@ export function renderRoute(): void {
 
   initHeader();
   initLayout();
-  focusMainContent();
+  // focusMainContent();
 }
 
 /** Initializes the router by rendering the current route and setting up event listeners for hash changes and authentication changes. When the URL hash changes or the authentication state changes, the renderRoute function is called to update the page content accordingly.
