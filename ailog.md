@@ -16,3 +16,7 @@ Outcome: I had put the window.location.hash = "#/login?loggedOut=true"; after lo
 02.07.2026:
 Problem: When I tried to create a new pet I got an error saying session expired, even though I was logged in. I pasted the code into ChatGPT and asked for help.
 Outcome: I had forgotten to add the Authorization header to the createPet function in pets.ts. I couldn't access the API Key Tool because I have forgotten my password, I sent a request to reset it, but I asked ChatGPT what my options were in case I couldn't access the API Key Tool because of summer holiday at Noroff. ChatGPT suggested I could use a key from a previous project, if it was not exposed publicly anywhere.
+
+08.07.2026:
+Problem: A black outline around the main content kept appearing when I redirected routes. Wasn't sure why, so I pasted the code into ChatGPT and asked for help.
+Outcome: I had put focus:outline-none on the main element, which fixed the problem.

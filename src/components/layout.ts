@@ -36,7 +36,7 @@ export function layout(pageContent: string): string {
 
       <main
         id="main-content"
-        class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
+        class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 focus:outline-none sm:px-6 sm:py-10 lg:px-8 lg:py-12"
         tabindex="-1"
       >
         ${pageContent}
