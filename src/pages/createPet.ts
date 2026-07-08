@@ -48,7 +48,7 @@ export function createPetPage(): string {
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
 
-            <p id="pet-name-error" class="mt-1 text-sm text-[#7C8595] hidden">
+            <p id="pet-name-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -69,7 +69,7 @@ export function createPetPage(): string {
             aria-describedby="pet-species-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-species-error" class="mt-1 text-sm text-[#7C8595] hidden">
+            <p id="pet-species-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -90,7 +90,7 @@ export function createPetPage(): string {
             aria-describedby="pet-breed-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-breed-error" class="mt-1 text-sm text-[#7C8595] hidden">
+            <p id="pet-breed-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -107,14 +107,14 @@ export function createPetPage(): string {
             id="pet-age"
             name="age"
             type="number"
-            min="0"
+            min="1"
             step="1"
             required
             aria-describedby="pet-age-help pet-age-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]  disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
             />
 
-            <p id="pet-age-error" class="mt-1 text-sm text-[#7C8595] hidden">
+            <p id="pet-age-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           
 
@@ -162,7 +162,7 @@ export function createPetPage(): string {
               <option value="male">Male</option>
               <option value="unknown">Unknown</option>
             </select>
-            <p id="pet-gender-error" class="mt-1 text-sm text-[#7C8595] hidden">
+            <p id="pet-gender-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -187,7 +187,7 @@ export function createPetPage(): string {
               <option value="medium">Medium</option>
               <option value="large">Large</option>
             </select>
-            <p id="pet-size-error" class="mt-1 text-sm text-[#7C8595] hidden">
+            <p id="pet-size-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -208,7 +208,7 @@ export function createPetPage(): string {
             aria-describedby="pet-color-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-color-error" class="mt-1 text-sm text-[#7C8595] hidden">
+            <p id="pet-color-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -254,7 +254,7 @@ export function createPetPage(): string {
             aria-describedby="pet-location-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-location-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-location-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -276,7 +276,7 @@ export function createPetPage(): string {
             aria-describedby="pet-image-url-error"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-image-url-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-image-url-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -298,7 +298,7 @@ export function createPetPage(): string {
               aria-describedby="pet-image-alt-error"
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
               />
-              <p id="pet-image-alt-error" class="mt-1 text-sm text-red-700 hidden">
+              <p id="pet-image-alt-error" class="mt-1 text-sm text-[#C95A5A] hidden">
               </p>
               <p class="mt-2 text-sm text-gray-600">
                 Provide a URL to an image of the pet and a brief description of what the image depicts.
@@ -322,7 +322,7 @@ export function createPetPage(): string {
             aria-describedby="pet-description-error"
             class="w-full resize-y rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             ></textarea>
-            <p id="pet-description-error" class="mt-1 text-sm text-red-700 hidden">
+            <p id="pet-description-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
         </div>
@@ -546,13 +546,13 @@ export function initCreatePetPage(): void {
         hasValidationErrors = true;
       } else if (
         !Number.isFinite(ageInput.valueAsNumber) ||
-        ageInput.valueAsNumber < 0 ||
+        ageInput.valueAsNumber < 1 ||
         !Number.isInteger(ageInput.valueAsNumber)
       ) {
         showFieldError(
           ageInput,
           ageError,
-          "Age must be a whole number of 0 or more.",
+          "Age must be a whole number of 1 or more.",
         );
 
         hasValidationErrors = true;

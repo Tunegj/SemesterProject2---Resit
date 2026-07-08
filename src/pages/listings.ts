@@ -2,6 +2,8 @@ import { fetchPets } from "../services/pets.ts";
 import { petCard } from "../components/petCard.ts";
 import type { Pet } from "../types/pet.ts";
 
+const PETS_PER_PAGE = 9;
+
 /**
  * Normalizes a search value by trimming whitespace, replacing multiple spaces with a single space, and converting to lowercase.
  * @param value - The search value to normalize.
@@ -354,6 +356,54 @@ export function listingsPage(): string {
       data-pet-list
       class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       ></div>
+
+      <nav
+      data-pagination
+      class="mt-8 flex flex-col items-center gap-4"
+      aria-label="Pet listings pagination"
+      hidden
+      >
+
+        <p
+        data-pagination-summary
+        class="text-sm text-[#2c2c2c]"
+        ></p>
+          
+
+        <div
+        class="flex flex-wrap items-center justify-center gap-2">
+          <button
+          type="button"
+          data-page-previous
+          class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
+          font-semibold text-[#2d6a6a] transition-colors
+          hover:bg-[#2d6a6a] hover:text-white
+          focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
+          disabled:cursor-not-allowed disabled:border-gray-300
+          disabled:bg-gray-300 disabled:text-gray-500"
+          >
+            Previous
+          </button>
+
+          <div
+          data-page-buttons
+          class="flex flex-wrap items-center justify-center gap-2"
+          ></div>
+
+          <button
+          type="button"
+          data-page-next
+          class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
+          font-semibold text-[#2d6a6a] transition-colors
+          hover:bg-[#2d6a6a] hover:text-white
+          focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
+          disabled:cursor-not-allowed disabled:border-gray-300
+          disabled:bg-gray-300 disabled:text-gray-500"
+          >
+            Next
+          </button>
+        </div>
+      </nav>
     </div>
   </section>
   `;
@@ -367,37 +417,41 @@ export async function initListingsPage(): Promise<void> {
   const listingsContainer = document.querySelector<HTMLElement>(
     "[data-listings-container]",
   );
-
   const listingsStatus = document.querySelector<HTMLParagraphElement>(
     "[data-listings-status]",
   );
-
   const petList = document.querySelector<HTMLElement>("[data-pet-list]");
-
   const petSearchInput = document.querySelector<HTMLInputElement>(
     "[data-pet-search-input]",
   );
-
   const speciesFilter = document.querySelector<HTMLSelectElement>(
     "[data-species-filter]",
   );
-
   const sizeFilter =
     document.querySelector<HTMLSelectElement>("[data-size-filter]");
-
   const genderFilter = document.querySelector<HTMLSelectElement>(
     "[data-gender-filter]",
   );
-
   const statusFilter = document.querySelector<HTMLSelectElement>(
     "[data-adoption-status-filter]",
   );
-
   const petSort = document.querySelector<HTMLSelectElement>("[data-pet-sort]");
-
   const resetListingsButton = document.querySelector<HTMLButtonElement>(
     "[data-reset-filters]",
   );
+
+  const pagination = document.querySelector<HTMLElement>("[data-pagination]");
+  const paginationSummary = document.querySelector<HTMLParagraphElement>(
+    "[data-pagination-summary]",
+  );
+  const pageButtons = document.querySelector<HTMLElement>(
+    "[data-page-buttons]",
+  );
+  const pagePreviousButton = document.querySelector<HTMLButtonElement>(
+    "[data-page-previous]",
+  );
+  const pageNextButton =
+    document.querySelector<HTMLButtonElement>("[data-page-next]");
 
   if (
     !listingsContainer ||
@@ -409,10 +463,18 @@ export async function initListingsPage(): Promise<void> {
     !genderFilter ||
     !statusFilter ||
     !petSort ||
-    !resetListingsButton
+    !resetListingsButton ||
+    !pagination ||
+    !paginationSummary ||
+    !pageButtons ||
+    !pagePreviousButton ||
+    !pageNextButton
   ) {
     return;
   }
+
+  let currentPage = 1;
+
   try {
     const pets = await fetchPets();
 
@@ -441,11 +503,18 @@ export async function initListingsPage(): Promise<void> {
       searchTerm = "",
       hasActiveFilters = false,
     ): void => {
-      petList.innerHTML = "";
+      petList.replaceChildren();
 
+      const totalPets = petsToRender.length;
       const hasActiveCriteria = Boolean(searchTerm) || hasActiveFilters;
 
-      if (petsToRender.length === 0) {
+      if (totalPets === 0) {
+        currentPage = 1;
+
+        pagination.hidden = true;
+        paginationSummary.textContent = "";
+        pageButtons.replaceChildren();
+
         listingsStatus.textContent = hasActiveCriteria
           ? `No pets match your search or selected filters.`
           : "No pets available for adoption at the moment.";
@@ -453,7 +522,20 @@ export async function initListingsPage(): Promise<void> {
         return;
       }
 
-      petList.innerHTML = petsToRender.map((pet) => petCard(pet)).join("");
+      const totalPages = Math.ceil(totalPets / PETS_PER_PAGE);
+
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const startIndex = (currentPage - 1) * PETS_PER_PAGE;
+      const endIndex = Math.min(startIndex + PETS_PER_PAGE, totalPets);
+
+      const petsForCurrentPage = petsToRender.slice(startIndex, endIndex);
+
+      petList.innerHTML = petsForCurrentPage
+        .map((pet) => petCard(pet))
+        .join("");
 
       petList
         .querySelectorAll<HTMLImageElement>("[data-pet-image]")
@@ -473,22 +555,56 @@ export async function initListingsPage(): Promise<void> {
           );
         });
 
+      if (totalPages > 1) {
+        pagination.hidden = false;
+        paginationSummary.textContent =
+          `Page ${currentPage} of ${totalPages}` +
+          ` | Showing ${startIndex + 1}-${endIndex} of ${totalPets} pets.`;
+
+        pagePreviousButton.disabled = currentPage === 1;
+        pageNextButton.disabled = currentPage === totalPages;
+
+        pageButtons.innerHTML = Array.from(
+          { length: totalPages },
+          (_, index) => {
+            const pageNumber = index + 1;
+            const isCurrentPage = pageNumber === currentPage;
+            const stateClasses = isCurrentPage
+              ? "border-[#2d6a6a] bg-[#2d6a6a] text-white"
+              : "border-[#2d6a6a] bg-white text-[#2d6a6a] hover:bg-[#2d6a6a] hover:text-white";
+
+            return `
+              <button 
+              type="button"
+              data-page-number="${pageNumber}" 
+              aria-label="Go to page ${pageNumber}"
+              ${isCurrentPage ? 'aria-current="page"' : ""}
+              class="min-w-10 rounded-lg border-2 px-3 py-2
+              font-semibold transition-colors
+              focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 ${stateClasses}"
+              >
+              ${pageNumber}
+              </button>`;
+          },
+        ).join("");
+      } else {
+        pagination.hidden = true;
+        paginationSummary.textContent = "";
+        pageButtons.replaceChildren();
+      }
+
       if (hasActiveFilters) {
-        listingsStatus.textContent = `${petsToRender.length} ${
-          petsToRender.length === 1
-            ? "matching pet found"
-            : "matching pets found"
+        listingsStatus.textContent = `${totalPets} ${
+          totalPets === 1 ? "matching pet found" : "matching pets found"
         }.`;
       } else if (searchTerm) {
-        listingsStatus.textContent = `${petsToRender.length} ${
-          petsToRender.length === 1 ? "pet matches" : "pets match"
+        listingsStatus.textContent = `${totalPets} ${
+          totalPets === 1 ? "pet matches" : "pets match"
         } "${searchTerm}".`;
       } else {
-        listingsStatus.textContent = `${petsToRender.length} pets available for adoption.`;
+        listingsStatus.textContent = `${totalPets} pets available for adoption.`;
       }
     };
-
-    renderPets(pets);
 
     const updateDisplayedPets = (): void => {
       const searchTerm = petSearchInput.value.trim().replace(/\s+/g, " ");
@@ -519,14 +635,58 @@ export async function initListingsPage(): Promise<void> {
       renderPets(sortedPets, searchTerm, hasActiveFilters);
     };
 
+    const resetToFirstPageAndUpdate = (): void => {
+      currentPage = 1;
+      updateDisplayedPets();
+    };
+
     updateDisplayedPets();
 
-    petSearchInput.addEventListener("input", updateDisplayedPets);
-    speciesFilter.addEventListener("change", updateDisplayedPets);
-    sizeFilter.addEventListener("change", updateDisplayedPets);
-    genderFilter.addEventListener("change", updateDisplayedPets);
-    statusFilter.addEventListener("change", updateDisplayedPets);
-    petSort.addEventListener("change", updateDisplayedPets);
+    petSearchInput.addEventListener("input", resetToFirstPageAndUpdate);
+    speciesFilter.addEventListener("change", resetToFirstPageAndUpdate);
+    sizeFilter.addEventListener("change", resetToFirstPageAndUpdate);
+    genderFilter.addEventListener("change", resetToFirstPageAndUpdate);
+    statusFilter.addEventListener("change", resetToFirstPageAndUpdate);
+    petSort.addEventListener("change", resetToFirstPageAndUpdate);
+
+    pagePreviousButton.addEventListener("click", () => {
+      if (currentPage <= 1) {
+        return;
+      }
+
+      currentPage -= 1;
+      updateDisplayedPets();
+    });
+
+    pageNextButton.addEventListener("click", () => {
+      currentPage += 1;
+      updateDisplayedPets();
+    });
+
+    pageButtons.addEventListener("click", (event) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const pageButton =
+        target.closest<HTMLButtonElement>("[data-page-number]");
+
+      if (!pageButton) {
+        return;
+      }
+
+      const pageNumber = Number(pageButton.dataset.pageNumber);
+
+      if (Number.isNaN(pageNumber) || pageNumber < 1) {
+        return;
+      }
+
+      currentPage = pageNumber;
+
+      updateDisplayedPets();
+    });
 
     resetListingsButton.addEventListener("click", () => {
       petSearchInput.value = "";
@@ -536,6 +696,7 @@ export async function initListingsPage(): Promise<void> {
       statusFilter.value = "";
       petSort.value = "";
 
+      currentPage = 1;
       updateDisplayedPets();
 
       petSearchInput.focus();

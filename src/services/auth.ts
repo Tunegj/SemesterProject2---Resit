@@ -70,8 +70,10 @@ export function isAuthenticated(): boolean {
   return isLoggedIn();
 }
 
-/** Checks if the currently authenticated user has administrative privileges based on the stored user information in local storage.
- * @returns A boolean indicating whether the user has admin privileges or not.
+/** Checks if the authenticated user may access admin routes.
+ *
+ * The Pets api login response does not provide a usr role, so every authenticated user is considered an admin in this project. Ownership checks determine whether a user may edit or delete a pet listing.
+ * @returns True when the user is authenticated.
  */
 export function isAdmin(): boolean {
   return isAuthenticated();

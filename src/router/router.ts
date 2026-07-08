@@ -1,6 +1,6 @@
 import { initHeader } from "../components/header.ts";
 import { layout, initLayout } from "../components/layout.ts";
-import { homePage } from "../pages/home.ts";
+import { homePage, initHomePage } from "../pages/home.ts";
 import { notFoundPage } from "../pages/notFound.ts";
 import { listingsPage, initListingsPage } from "../pages/listings.ts";
 import { createPetPage, initCreatePetPage } from "../pages/createPet.ts";
@@ -75,6 +75,7 @@ export function renderRoute(): void {
   switch (route) {
     case "#/":
       app.innerHTML = layout(homePage());
+      initHomePage();
       break;
 
     case "#/listings":

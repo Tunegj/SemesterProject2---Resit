@@ -146,7 +146,7 @@ function editPetForm(pet: Pet): string {
             id="pet-age"
             name="age"
             type="number"
-            min="0"
+            min="1"
             step="1"
             value="${ageIsUnknown ? "" : String(pet.age)}"
             ${ageIsUnknown ? "disabled" : "required"}
@@ -776,13 +776,13 @@ function initEditPetForm(petId: string): void {
         hasValidationErrors = true;
       } else if (
         !Number.isFinite(ageInput.valueAsNumber) ||
-        ageInput.valueAsNumber < 0 ||
+        ageInput.valueAsNumber < 1 ||
         !Number.isInteger(ageInput.valueAsNumber)
       ) {
         showFieldError(
           ageInput,
           ageError,
-          "Age must be a whole number of 0 or more.",
+          "Age must be a whole number of 1 or more.",
         );
         hasValidationErrors = true;
       }
