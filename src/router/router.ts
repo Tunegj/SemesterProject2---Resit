@@ -12,58 +12,49 @@ import {
   initSingleListingPage,
 } from "../pages/singlePet.ts";
 import { editPetPage, initEditPetPage } from "../pages/editPet.ts";
-import { isAdmin, isAuthenticated } from "../services/auth.ts";
+import { isAuthenticated } from "../services/auth.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
-/** Retrieves the current route from the URL hash and returns it as a string. The route is determined by splitting the hash at the "?" character and taking the first part, which represents the path of the route. If there is no hash in the URL, it defaults to "#/".
- * @returns A string representing the current route based on the URL hash.
+/**
+ * Returns the current route without any query parameters.
  */
-function getRoutes(): string {
+function getRoute(): string {
   const hash = window.location.hash || "#/";
 
   return hash.split("?")[0];
 }
 
-/** Focuses the main content area of the page by selecting the element with the ID "main-content" and calling the focus method on it. This is done to improve accessibility and ensure that keyboard users can easily navigate to the main content after a route change. The focus action is wrapped in a requestAnimationFrame to ensure it occurs after the DOM has been updated.
+const protectedRoutes = ["#/profile", "#/create", "#/edit"];
+const guestRoutes = ["#/login", "#/register"];
+
+let hasRenderedInitialRoute = false;
+
+/** Moves focus to the main content after a SPA route change.
  */
-// function focusMainContent(): void {
-//   requestAnimationFrame(() => {
-//     const mainContent = document.querySelector<HTMLElement>("#main-content");
 
-//     mainContent?.focus({
-//       preventScroll: true,
-//     });
-//   });
-// }
+function focusMainContent(): void {
+  requestAnimationFrame(() => {
+    const mainContent = document.querySelector<HTMLElement>("#main-content");
 
-/** Renders the appropriate page content based on the current route in the URL hash. It checks the user's authentication and admin status to determine if they have access to certain routes. If the user is not authorized to access a route, they are redirected to the login page or home page as appropriate. The function updates the innerHTML of the app container with the layout and page content, and initializes necessary components such as the header and layout. It also sets up event listeners for accessibility features.
+    mainContent?.focus({});
+  });
+}
+
+/**
+ * Renders and initializes the page matching the current route.
+ * Redirects users who do not have access to protected or guest-only routes.
  */
 export function renderRoute(): void {
   if (!app) return;
 
-  const route = getRoutes();
+  const route = getRoute();
 
-  const authenticatedRoutes = ["#/profile"];
-  const adminRoutes = ["#/create", "#/edit"];
-  const guestRoutes = ["#/login", "#/register"];
-
-  const isAdminRoute = adminRoutes.includes(route);
+  const isProtectedRoute = protectedRoutes.includes(route);
   const isGuestRoute = guestRoutes.includes(route);
-  const isAuthenticatedRoute = authenticatedRoutes.includes(route);
 
-  if (isAuthenticatedRoute && !isAuthenticated()) {
+  if (isProtectedRoute && !isAuthenticated()) {
     window.location.hash = "#/login?reason=protected";
-    return;
-  }
-
-  if (isAdminRoute && !isAuthenticated()) {
-    window.location.hash = "#/login?reason=protected";
-    return;
-  }
-
-  if (isAdminRoute && !isAdmin()) {
-    window.location.hash = "#/";
     return;
   }
 
@@ -118,10 +109,15 @@ export function renderRoute(): void {
 
   initHeader();
   initLayout();
-  // focusMainContent();
+
+  if (hasRenderedInitialRoute) {
+    focusMainContent();
+  }
+
+  hasRenderedInitialRoute = true;
 }
 
-/** Initializes the router by rendering the current route and setting up event listeners for hash changes and authentication changes. When the URL hash changes or the authentication state changes, the renderRoute function is called to update the page content accordingly.
+/** Starts the router and listens for route and authentication changes.
  */
 export function initRouter(): void {
   renderRoute();
