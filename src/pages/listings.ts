@@ -174,8 +174,7 @@ function sortPets(petsToSort: Pet[], sortOption: string): Pet[] {
 }
 
 /**
- * Generates the HTML string for the listings page, which displays a list of pets available for adoption. The page includes a header with a title and description, and a container for the pet listings. The listings container has an aria-busy attribute to indicate loading status, and a status message that updates based on the number of pets available or any errors encountered during data fetching.
- * @returns An HTML string representing the listings page.
+ * Creates the pet listings page markup.
  */
 export function listingsPage(): string {
   return `
@@ -185,7 +184,7 @@ export function listingsPage(): string {
       id="listings-heading"
       class="text-3xl font-bold text-[#2d6a6a]"
       >
-        Pets available for Adoption
+        Pets Available for Adoption
       </h1>
 
       <p class="mt-3 text-[#2c2c2c]">
@@ -205,7 +204,7 @@ export function listingsPage(): string {
         data-pet-search-input
         type="search"
         placeholder="Search by name, breed, location..."
-        autoComplete="off"
+        autocomplete="off"
         class="
         w-full rounded-lg border border-gray-300 bg-white px-4 py-3
         text-[#2c2c2c]
@@ -219,10 +218,10 @@ export function listingsPage(): string {
       />
     </div>
 
-    <div
-    class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5"
-    aria-label="Filter and sort pets"
-    >
+    <fieldset class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <legend class="sr-only">
+        Filter and sort pets
+      </legend>
       <div>
         <label
         for="filter-species"
@@ -321,7 +320,7 @@ export function listingsPage(): string {
         <option value="oldest">Oldest first</option>
       </select>
     </div>
-  </div>
+  </fieldset>
 
   <div class="mb-8">
     <button
@@ -359,14 +358,14 @@ export function listingsPage(): string {
 
       <nav
       data-pagination
-      class="mt-8 flex flex-col items-center gap-4"
+      class="mt-8 hidden flex-col items-center gap-4"
       aria-label="Pet listings pagination"
-      hidden
       >
 
         <p
         data-pagination-summary
         class="text-sm text-[#2c2c2c]"
+        aria-live="polite"
         ></p>
           
 
@@ -410,8 +409,7 @@ export function listingsPage(): string {
 }
 
 /**
- * Initializes the listings page by fetching the list of pets availble for adoption and rendering them in the pet list container. It also sets up errro handling and updates the status message based on the number of pets available or any errors encountered during data fetching. Additionally, it adds event listeners to handle image loading errors for each pet card.
- * This function should be called when the listings page is loaded to ensure that the pet data is fetched and displayed correctly.
+ * Loads the pets and initializes search, filter, sorting and pagination.
  */
 export async function initListingsPage(): Promise<void> {
   const listingsContainer = document.querySelector<HTMLElement>(
@@ -473,10 +471,19 @@ export async function initListingsPage(): Promise<void> {
     return;
   }
 
+  const setPaginationVisibility = (isVisible: boolean): void => {
+    pagination.classList.toggle("hidden", !isVisible);
+    pagination.classList.toggle("flex", isVisible);
+  };
+
   let currentPage = 1;
 
   try {
     const pets = await fetchPets();
+
+    if (!listingsContainer.isConnected) {
+      return;
+    }
 
     populateFilterOptions(
       speciesFilter,
@@ -511,7 +518,7 @@ export async function initListingsPage(): Promise<void> {
       if (totalPets === 0) {
         currentPage = 1;
 
-        pagination.hidden = true;
+        setPaginationVisibility(false);
         paginationSummary.textContent = "";
         pageButtons.replaceChildren();
 
@@ -556,7 +563,7 @@ export async function initListingsPage(): Promise<void> {
         });
 
       if (totalPages > 1) {
-        pagination.hidden = false;
+        setPaginationVisibility(true);
         paginationSummary.textContent =
           `Page ${currentPage} of ${totalPages}` +
           ` | Showing ${startIndex + 1}-${endIndex} of ${totalPets} pets.`;
@@ -588,7 +595,7 @@ export async function initListingsPage(): Promise<void> {
           },
         ).join("");
       } else {
-        pagination.hidden = true;
+        setPaginationVisibility(false);
         paginationSummary.textContent = "";
         pageButtons.replaceChildren();
       }
@@ -604,6 +611,16 @@ export async function initListingsPage(): Promise<void> {
       } else {
         listingsStatus.textContent = `${totalPets} pets available for adoption.`;
       }
+    };
+
+    const focusCurrentPageButton = (): void => {
+      requestAnimationFrame(() => {
+        const currentPageButton = pageButtons.querySelector<HTMLButtonElement>(
+          `[aria-current="page"]`,
+        );
+
+        currentPageButton?.focus();
+      });
     };
 
     const updateDisplayedPets = (): void => {
@@ -686,6 +703,7 @@ export async function initListingsPage(): Promise<void> {
       currentPage = pageNumber;
 
       updateDisplayedPets();
+      focusCurrentPageButton();
     });
 
     resetListingsButton.addEventListener("click", () => {
@@ -702,13 +720,23 @@ export async function initListingsPage(): Promise<void> {
       petSearchInput.focus();
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error loading pets:", error);
 
-    listingsStatus.textContent =
-      error instanceof Error
-        ? error.message
-        : "Unable to load pets. Please try again later.";
+    if (!listingsContainer.isConnected) {
+      return;
+    }
+
+    petList.replaceChildren();
+    setPaginationVisibility(false);
+    paginationSummary.textContent = "";
+    pageButtons.replaceChildren();
+
+    listingsStatus.setAttribute("role", "alert");
+    listingsStatus.classList.add("text-red-600");
+    listingsStatus.textContent = "Unable to load pets. Please try again later.";
   } finally {
-    listingsContainer.setAttribute("aria-busy", "false");
+    if (listingsContainer.isConnected) {
+      listingsContainer.setAttribute("aria-busy", "false");
+    }
   }
 }
