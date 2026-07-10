@@ -5,10 +5,13 @@ import { isPetOwner } from "../services/auth.ts";
 import { getPetIdFromHash } from "../utils/getPetIdFromHash.ts";
 import { isValidListingId } from "../utils/isValidListingId.ts";
 
-/** * Retrieves a display-friendly text for a given value, falling back to a specified string if the value is not a valid string.
- * @param value - The value to retrieve display text for.
- * @param fallback - The fallback string to use if the value is not valid.
- * @returns A string suitable for display, either the trimmed value or the fallback.
+/**
+ *  Retrieves a display-friendly text for a given value.
+ *  Returns the fallback when the value is not a non-empty string.
+ *
+ * @param value - The value to format.
+ * @param fallback - The text to return when the value is invalid or empty.
+ * @returns The trimmed string or the fallback text.
  */
 function getDisplayText(value: unknown, fallback: string): string {
   if (typeof value !== "string") return fallback;
@@ -18,74 +21,76 @@ function getDisplayText(value: unknown, fallback: string): string {
   return trimmedValue || fallback;
 }
 
-/** * Retrieves a display-friendly age string for a given value, falling back to "Unknown age" if the value is not a valid number.
- * @param value - The value to retrieve display age for.
- * @returns A string representing the age, or "Unknown age" if the value is not valid.
+/**
+ * Formats a pet's age for display.
+ * Returns "Unknown age" when the value is not a valid positive number.
+ *
+ * @param value - The age value to format.
+ * @returns The formatted age or "Unknown age".
  */
 function getDisplayAge(value: unknown): string {
-  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
     return "Unknown age";
   }
 
   return `${value} ${value === 1 ? "year" : "years"}`;
 }
 
-/** * Generates a fallback image element for a pet when no image is available.
- * @param petname - The name of the pet.
- * @returns An HTML string representing the fallback image element.
+/**
+ * Generates a fallback image markup for a pet when no valid image is available.
+ * @param petName - The name of the pet.
+ * @returns The HTML markup for the image fallback.
  */
-function imageFallback(petname: string): string {
+function imageFallback(petName: string): string {
   return `
     <div
         class="flex min-h-64 items-center justify-center bg-gray-100 px-6 text-center text-[#2c2c2c]"
         role="img"
-        aria-label="No image available for ${escapeHtml(petname)}"
+        aria-label="No image available for ${escapeHtml(petName)}"
     >
         No image available
     </div>
     `;
 }
 
-/** * Generates the HTML for the single pet listing page, including a back button and placeholders for pet details.
- * @returns An HTML string representing the single pet listing page.
+/**
+ * Generates the initial markup for the single pet listing page.
+ *
+ * @returns The HTML markup for the loading state and pet details container.
  */
 export function singleListingPage(): string {
   return `
-  <section aria-labelledby="single-listing-heading">
+  <section>
     <div
-    data-single-listing-container
-    aria-busy="true"
+      data-single-listing-container
+      aria-busy="true"
     >
-    ${backButton()}
-   
+      ${backButton()}
       
       <p
-      data-single-listing-status
-      role="status"
-      aria-live="polite"
-      class="mt-4 text-[#2c2c2c]"
+        data-single-listing-status
+        role="status"
+        aria-live="polite"
+        class="mt-4 text-[#2c2c2c]"
       >
         Loading pet details...
       </p>
     
       <div
-      data-single-listing-content
-      class="mt-8"
-      >
-         <h1
-        id="single-listing-heading"
-        data-single-listing-heading
-        class="text-3xl font-bold text-[#2d6a6a]"
-      >
-        Pet Details
-      </h1></div>
+        data-single-listing-content
+        class="mt-8"
+      ></div>
     </div>
   </section>
   `;
 }
 
-/** * Initializes the single pet listing page by fetching the pet details based on the ID from the URL and populating the page with the retrieved data.
- * It also sets up the back button functionality and handles error scenarios.
+/**
+ * Initializes the single pet listing page.
+ * Retrieves the pet ID from te URL, validates it, fetches the pet data,
+ * renders the pet details, and registers te image and share button listeners.
+ *
+ * @returns A promise that resolves when the page initialization is complete.
  */
 export async function initSingleListingPage(): Promise<void> {
   initBackButton("#/listings");
@@ -107,6 +112,7 @@ export async function initSingleListingPage(): Promise<void> {
 
   if (!petId) {
     listingContent.replaceChildren();
+    listingStatus.setAttribute("role", "alert");
 
     listingStatus.textContent =
       "This pet listing could not be loaded because its ID is missing.";
@@ -117,6 +123,7 @@ export async function initSingleListingPage(): Promise<void> {
 
   if (!isValidListingId(petId)) {
     listingContent.replaceChildren();
+    listingStatus.setAttribute("role", "alert");
 
     listingStatus.textContent =
       "This pet listing could not be loaded because its ID is invalid.";
@@ -127,6 +134,9 @@ export async function initSingleListingPage(): Promise<void> {
 
   try {
     const pet = await fetchPetById(petId);
+
+    if (!listingContainer.isConnected) return;
+
     const showOwnerActions = isPetOwner(pet.owner?.email);
 
     const petName = getDisplayText(pet.name, "Pet details");
@@ -145,8 +155,9 @@ export async function initSingleListingPage(): Promise<void> {
     listingContent.innerHTML = `
     <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-10">
       <div 
-      data-single-listing-image-wrapper
-      class="overflow-hidden rounded-lg lg:flex lg:justify-center">
+        data-single-listing-image-wrapper
+        class="overflow-hidden rounded-lg lg:flex lg:justify-center"
+      >
         ${
           imageUrl
             ? `
@@ -164,12 +175,13 @@ export async function initSingleListingPage(): Promise<void> {
 
       <div class="mt-6 lg:mt-0">
         <h1
-        id="single-listing-heading"
-        class="text-3xl font-bold text-[#2d6a6a]">
+          id="single-listing-heading"
+          class="text-3xl font-bold text-[#2d6a6a]"
+        >
           ${escapeHtml(petName)}
         </h1>
 
-        <p class="mt-2 text-xl font-semibold text-[2c2c2c]">
+        <p class="mt-2 text-xl font-semibold text-[#2c2c2c]">
           ${escapeHtml(breed)}
         </p>
 
@@ -208,26 +220,28 @@ export async function initSingleListingPage(): Promise<void> {
           <button
             type="button"
             data-copy-url-button
+            aria-label="Copy link to this pet"
             class="inline-flex items-center gap-2 rounded text-sm font-medium text-[#2c2c2c] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2d6a6a]"
           >
             <span aria-hidden="true">🔗</span>
-            Share
+              Share
           </button>
         
           <p
-          data-copy-url-status
-          role="status"
-          aria-live="polite"
-          class="mt-2 text-sm text-[#2c2c2c]"
+            data-copy-url-status
+            role="status"
+            aria-live="polite"
+            class="mt-2 text-sm text-[#2c2c2c]"
           ></p>
         </div>
 
         <section 
-        class="mt-8"
-        aria-labelledby="single-listing-about-heading">
+          class="mt-8"
+          aria-labelledby="single-listing-about-heading"
+        >
           <h2
-          id="single-listing-about-heading"
-          class="text-2xl font-bold text-[#2d6a6a]"
+            id="single-listing-about-heading"
+            class="text-2xl font-bold text-[#2d6a6a]"
           >
             About ${escapeHtml(petName)}
           </h2>
@@ -242,11 +256,10 @@ export async function initSingleListingPage(): Promise<void> {
             ? `
         <div
         class="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 sm:flex-row"
-        aria-label="Pet management actions"
         >
           <a
-          href="#/edit?id=${encodeURIComponent(petId)}"
-          class="inline-flex items-center justify-center rounded-lg bg-[#2d6a6a] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#245858] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2d6a6a]"
+            href="#/edit?id=${encodeURIComponent(petId)}"
+            class="inline-flex items-center justify-center rounded-lg bg-[#2d6a6a] px-5 py-3 font-semibold text-white transition-colors hover:bg-[#245858] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2d6a6a]"
           >
             Edit Pet
           </a>
@@ -266,11 +279,15 @@ export async function initSingleListingPage(): Promise<void> {
       "[data-single-listing-image-wrapper]",
     );
 
-    listingImage?.addEventListener("error", () => {
-      if (!imageWrapper) return;
+    listingImage?.addEventListener(
+      "error",
+      () => {
+        if (!imageWrapper) return;
 
-      imageWrapper.innerHTML = imageFallback(petName);
-    });
+        imageWrapper.innerHTML = imageFallback(petName);
+      },
+      { once: true },
+    );
 
     const copyUrlButton = listingContent.querySelector<HTMLButtonElement>(
       "[data-copy-url-button]",
@@ -291,9 +308,13 @@ export async function initSingleListingPage(): Promise<void> {
       try {
         await navigator.clipboard.writeText(window.location.href);
 
+        if (!copyUrlStatus.isConnected) return;
+
         copyUrlStatus.textContent = "URL copied to clipboard!";
       } catch (error) {
         console.error("Failed to copy URL to clipboard:", error);
+
+        if (!copyUrlStatus.isConnected) return;
 
         copyUrlStatus.textContent =
           "Failed to copy URL. Please try again later.";
@@ -304,7 +325,10 @@ export async function initSingleListingPage(): Promise<void> {
   } catch (error) {
     console.error(error);
 
+    if (!listingContainer.isConnected) return;
+
     listingContent.replaceChildren();
+    listingStatus.setAttribute("role", "alert");
 
     if (
       error instanceof Error &&
@@ -315,10 +339,10 @@ export async function initSingleListingPage(): Promise<void> {
     }
 
     listingStatus.textContent =
-      error instanceof Error
-        ? error.message
-        : "Unable to load pet details. Please try again later.";
+      "Unable to load pet details. Please try again later.";
   } finally {
-    listingContainer.setAttribute("aria-busy", "false");
+    if (listingContainer.isConnected) {
+      listingContainer.setAttribute("aria-busy", "false");
+    }
   }
 }
