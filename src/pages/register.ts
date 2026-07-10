@@ -2,165 +2,180 @@ import { registerUser } from "../services/register.ts";
 import { loginUser } from "../services/login.ts";
 import { saveAuth } from "../services/auth.ts";
 
-/** * Generates the HTML string for the register page, which includes a form for users to enter their username, email, password, and confirm password. The form includes validation error messages for each field, as well as a general registration error message for failed registration attempts. The page also provides a link to the login page for users who already have an account.
- * @returns An HTML string representing the register page.
+/**
+ * Generates the markup for the registration page.
+ *
+ * @returns The registration page HTML, including the registration form and validation feedback areas.
  */
 export function registerPage(): string {
   return `
   <section 
-  class="mx-auto w-full max-w-sm"
-  aria-labelledby="register-heading"
+    class="mx-auto w-full max-w-sm"
+    aria-labelledby="register-heading"
   >
     <h1 id="register-heading" class="text-center text-3xl font-bold text-[#2c2c2c]">
       Register
     </h1>
 
     <form 
-    class="mt-8"
-    data-register-form
-    novalidate
+      class="mt-8"
+      data-register-form
+      novalidate
+      aria-busy="false"
     >
       <div class="space-y-5 rounded-lg bg-white p-6 shadow-sm">
         <div>
           <label for="register-name"
-          class="block text-sm font-medium text-[#2c2c2c]"
+            class="block text-sm font-medium text-[#2c2c2c]"
           >
             Username
           </label>
 
           <input
-          id="register-name"
-          name="name"
-          type="text"
-          autocomplete="username"
-          placeholder="Choose a username"
-          required
-          aria-describedby="register-name-error"
-          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
+            id="register-name"
+            name="name"
+            type="text"
+            autocomplete="username"
+            placeholder="Choose a username"
+            required
+            aria-describedby="register-name-error register-name-hint"
+            class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
           <p
-          id="register-name-error"
-          class="mt-2 text-sm text-[#C95A5A]"
-          data-error-for="name"
-          aria-live="polite"
+            id="register-name-error"
+            class="mt-2 text-sm text-[#C95A5A]"
+            data-error-for="name"
           ></p>
 
-          <p class="mt-1 text-xs text-gray-600">
-          Your username cannot contain spaces.
+          <p 
+          id="register-name-hint"
+          class="mt-1 text-xs text-gray-600">
+            Your username cannot contain spaces.
           </p>
         </div>
 
 
         <div>
           <label for="register-email" 
-          class="block text-sm font-medium text-[#2c2c2c]"
+            class="block text-sm font-medium text-[#2c2c2c]"
           >
             Email
           </label>
 
           <input
-          id="register-email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          placeholder="Enter your email"
-          required
-          aria-describedby="register-email-error"
-          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
+            id="register-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            autocapitalize="none"
+            spellcheck="false"
+            placeholder="Enter your email"
+            required
+            aria-describedby="register-email-error"
+            class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p
-          id="register-email-error"
-          class="mt-2 text-sm text-[#C95A5A]"
-          data-error-for="email"
-          aria-live="polite"
+            id="register-email-error"
+            class="mt-2 text-sm text-[#C95A5A]"
+            data-error-for="email"
           ></p>
         </div>
 
         <div>
           <label for="register-password"
-          class="block text-sm font-medium text-[#2c2c2c]"
+            class="block text-sm font-medium text-[#2c2c2c]"
           >
             Password
           </label>
 
           <input
-          id="register-password"
-          name="password"
-          type="password"
-          autocomplete="new-password"
-          placeholder="Enter your password"
-          required
-          minlength="8"
-          aria-describedby="register-password-error"
-          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
+            id="register-password"
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Enter your password"
+            required
+            minlength="8"
+            aria-describedby="register-password-error register-password-hint"
+            class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p
-          id="register-password-error"
-          class="mt-2 text-sm text-[#C95A5A]"
-          data-error-for="password"
-          aria-live="polite"
+            id="register-password-error"
+            class="mt-2 text-sm text-[#C95A5A]"
+            data-error-for="password"
           ></p>
+
+          <p 
+            id="register-password-hint"
+            class="mt-1 text-xs text-gray-600"
+          >
+            Your password must be at least 8 characters long.
+          </p>
         </div>
 
         <div>
           <label for="register-confirm-password"
-          class="block text-sm font-medium text-[#2c2c2c]"
+            class="block text-sm font-medium text-[#2c2c2c]"
           >
             Confirm Password
           </label>
           <input
-          id="register-confirm-password"
-          name="confirmPassword"
-          type="password"
-          autocomplete="new-password"
-          placeholder="Confirm your password"
-          required
-          aria-describedby="register-confirm-password-error"
-          class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
+            id="register-confirm-password"
+            name="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Confirm your password"
+            required
+            aria-describedby="register-confirm-password-error"
+            class="mt-2 w-full rounded-md border border-[#2d6a6a] px-3 py-3 text-[#2c2c2c] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
 
           <p
-          id="register-confirm-password-error"
-          class="mt-2 text-sm text-[#C95A5A]"
-          data-error-for="confirmPassword"
-          aria-live="polite"
+            id="register-confirm-password-error"
+            class="mt-2 text-sm text-[#C95A5A]"
+            data-error-for="confirmPassword"
           ></p>
         </div>
-
       </div>
 
       <p
-      class="mt-4 text-center text-sm text-[#C95A5A]"
-      data-register-error
-      role="alert"
-      aria-live="assertive"
+        class="mt-4 text-center text-sm text-[#C95A5A]"
+        data-register-error
+        role="alert"
       ></p>
 
       <button
-      type="submit"
-      class="mx-auto mt-6 block rounded-lg bg-[#2d6a6a] px-10 py-3 font-semibold text-white transition-colors hover:bg-[#245656] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#d1d5db] disabled:text-[#4b5563] disabled:hover:bg-[#d1d5db]"
-      data-register-submit
+        type="submit"
+        class="mx-auto mt-6 block rounded-lg bg-[#2d6a6a] px-10 py-3 font-semibold text-white transition-colors hover:bg-[#245656] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#d1d5db] disabled:text-[#4b5563] disabled:hover:bg-[#d1d5db]"
+        data-register-submit
       >
         Register
       </button>
     </form>
 
-    <p class="mt-6 text-center leading-tight text-[#2c2c2c]">
-    Already have an account?
+    <p class="mt-6 text-center leading-tight text-[#2c2c2c]"
+    >
+      Already have an account?
     <br />
-    Login
-    <a
-    href="#/login"
-    class="font-medium text-[#2d6a6a] underline underline-offset-2"
-    >here</a>
+      <a
+        href="#/login"
+        class="font-medium text-[#2d6a6a] underline underline-offset-2"
+      >
+         Log in
+      </a>
     </p>
   </section>
   `;
 }
 
-/** * Initializes the register page by setting up event listeners for the registration form submission. It handles form validation, displays error messages for invalid inputs, and manages the registration process by calling the registerUser function. If the registration is successful, it automatically logs in the user and saves the authentication token. If there are any errors during registration or login, it displays an appropriate error message.
+/**
+ * Initializes the registration page.
+ * Handles form validation, user registration, automatic login,
+ * authentication storage, and error handling.
+ *
  */
 export function initRegisterPage(): void {
   const form = document.querySelector<HTMLFormElement>("[data-register-form]");
@@ -215,6 +230,35 @@ export function initRegisterPage(): void {
 
   let isSubmitting = false;
 
+  nameInput.addEventListener("input", () => {
+    nameError.textContent = "";
+    nameInput.removeAttribute("aria-invalid");
+    registerError.textContent = "";
+  });
+
+  emailInput.addEventListener("input", () => {
+    emailError.textContent = "";
+    emailInput.removeAttribute("aria-invalid");
+    registerError.textContent = "";
+  });
+
+  passwordInput.addEventListener("input", () => {
+    passwordError.textContent = "";
+    passwordInput.removeAttribute("aria-invalid");
+    registerError.textContent = "";
+
+    if (confirmPasswordInput.value) {
+      confirmPasswordError.textContent = "";
+      confirmPasswordInput.removeAttribute("aria-invalid");
+    }
+  });
+
+  confirmPasswordInput.addEventListener("input", () => {
+    confirmPasswordError.textContent = "";
+    confirmPasswordInput.removeAttribute("aria-invalid");
+    registerError.textContent = "";
+  });
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -237,6 +281,9 @@ export function initRegisterPage(): void {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     const confirmPassword = confirmPasswordInput.value;
+
+    nameInput.value = username;
+    emailInput.value = email;
 
     let hasValidationErrors = false;
 
@@ -269,8 +316,7 @@ export function initRegisterPage(): void {
       passwordInput.setAttribute("aria-invalid", "true");
       hasValidationErrors = true;
     } else if (password.length < 8) {
-      passwordError.textContent =
-        "Password must be at least 8 characters long.";
+      passwordError.textContent = "Password is too short.";
       passwordInput.setAttribute("aria-invalid", "true");
       hasValidationErrors = true;
     }
@@ -295,6 +341,12 @@ export function initRegisterPage(): void {
     }
 
     isSubmitting = true;
+    form.setAttribute("aria-busy", "true");
+
+    nameInput.disabled = true;
+    emailInput.disabled = true;
+    passwordInput.disabled = true;
+    confirmPasswordInput.disabled = true;
     submitButton.disabled = true;
     submitButton.textContent = "Registering...";
 
@@ -307,6 +359,8 @@ export function initRegisterPage(): void {
         password,
       });
 
+      if (!form.isConnected) return;
+
       registrationSuccessful = true;
 
       const user = await loginUser({
@@ -314,31 +368,48 @@ export function initRegisterPage(): void {
         password,
       });
 
+      if (!form.isConnected) return;
+
       const authSaved = saveAuth(user.accessToken, {
         name: user.name,
         email: user.email,
       });
 
       if (!authSaved) {
+        console.error(
+          "Registration successful, but the authentication session could not be saved.",
+        );
+
         window.location.hash = "#/login?registered=true&autoLoginFailed=true";
         return;
       }
 
       window.location.hash = "#/?registered=true";
     } catch (error) {
+      if (!form.isConnected) return;
+
       if (registrationSuccessful) {
         window.location.hash = "#/login?registered=true&autoLoginFailed=true";
         return;
       }
 
+      console.error("Registration failed:", error);
+
       registerError.textContent =
-        error instanceof Error
-          ? error.message
-          : "Unable to register. Please try again.";
+        "Unable to register. Please check your details and try again.";
     } finally {
-      submitButton.disabled = false;
-      submitButton.textContent = "Register";
-      isSubmitting = false;
+      if (form.isConnected) {
+        form.setAttribute("aria-busy", "false");
+
+        nameInput.disabled = false;
+        emailInput.disabled = false;
+        passwordInput.disabled = false;
+        confirmPasswordInput.disabled = false;
+        submitButton.disabled = false;
+        submitButton.textContent = "Register";
+
+        isSubmitting = false;
+      }
     }
   });
 }
