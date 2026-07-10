@@ -1,5 +1,7 @@
 import type { PetPayload } from "../types/pet.ts";
 import { addPet } from "../services/pets.ts";
+import { showFieldError, clearFieldError } from "../utils/formValidation.ts";
+import { isValidHttpUrl } from "../utils/isValidUrl.ts";
 
 /**
  * Generates the HTML for the "Create Pet Listing" page.
@@ -88,8 +90,7 @@ export function createPetPage(): string {
               aria-describedby="pet-breed-error"
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-breed-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-breed-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
 
           <div>
@@ -159,8 +160,7 @@ export function createPetPage(): string {
               <option value="male">Male</option>
               <option value="unknown">Unknown</option>
             </select>
-            <p id="pet-gender-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-gender-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
 
           <div>
@@ -184,8 +184,7 @@ export function createPetPage(): string {
               <option value="medium">Medium</option>
               <option value="large">Large</option>
             </select>
-            <p id="pet-size-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-size-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
 
           <div>
@@ -205,8 +204,7 @@ export function createPetPage(): string {
               aria-describedby="pet-color-error"
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-color-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-color-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
 
           <div>
@@ -230,8 +228,7 @@ export function createPetPage(): string {
               <option value="pending">Pending</option>
               <option value="adopted">Adopted</option>
             </select>
-            <p id="pet-adoption-status-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-adoption-status-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
 
           <div>
@@ -251,8 +248,7 @@ export function createPetPage(): string {
               aria-describedby="pet-location-error"
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-location-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-location-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
 
           <div>
@@ -273,8 +269,7 @@ export function createPetPage(): string {
               aria-describedby="pet-image-url-error"
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             />
-            <p id="pet-image-url-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-image-url-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
 
           <div>
@@ -282,7 +277,7 @@ export function createPetPage(): string {
               for="pet-image-alt"
               class="mb-2 block font-semibold text-[#2c2c2c]"
             >
-            Image Alt Text
+              Image Alt Text
               <span aria-hidden="true">*</span>
             </label>
 
@@ -295,8 +290,8 @@ export function createPetPage(): string {
                 aria-describedby="pet-image-alt-error"
                 class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
               />
-              <p id="pet-image-alt-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-              </p>
+              <p id="pet-image-alt-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
+
               <p class="mt-2 text-sm text-gray-600">
                 Provide a URL to an image of the pet and a brief description of what the image depicts.
               </p> 
@@ -319,12 +314,9 @@ export function createPetPage(): string {
               aria-describedby="pet-description-error"
               class="w-full resize-y rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
             ></textarea>
-            <p id="pet-description-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
+            <p id="pet-description-error" class="mt-1 text-sm text-[#C95A5A] hidden"></p>
           </div>
         </div>
-
-      
 
         <p
           data-create-pet-status
@@ -458,53 +450,28 @@ export function initCreatePetPage(): void {
     descriptionTextarea,
   ];
 
+  const fieldErrors = [
+    [nameInput, nameError],
+    [speciesInput, speciesError],
+    [breedInput, breedError],
+    [ageInput, ageError],
+    [genderSelect, genderError],
+    [sizeSelect, sizeError],
+    [colorInput, colorError],
+    [adoptionStatusSelect, adoptionStatusError],
+    [locationInput, locationError],
+    [imageUrlInput, imageUrlError],
+    [imageAltInput, imageAltError],
+    [descriptionTextarea, descriptionError],
+  ] as const;
+
   const defaultSubmitText =
     submitButton.textContent?.trim() || "Create Pet Listing";
 
-  type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-
-  const clearFieldError = (
-    field: FormField,
-    errorElement: HTMLElement,
-  ): void => {
-    field.removeAttribute("aria-invalid");
-    errorElement.textContent = "";
-    errorElement.classList.add("hidden");
-  };
-
-  const showFieldError = (
-    field: FormField,
-    errorElement: HTMLElement,
-    message: string,
-  ): void => {
-    field.setAttribute("aria-invalid", "true");
-    errorElement.textContent = message;
-    errorElement.classList.remove("hidden");
-  };
-
   const clearAllFieldErrors = (): void => {
-    clearFieldError(nameInput, nameError);
-    clearFieldError(speciesInput, speciesError);
-    clearFieldError(breedInput, breedError);
-    clearFieldError(ageInput, ageError);
-    clearFieldError(genderSelect, genderError);
-    clearFieldError(sizeSelect, sizeError);
-    clearFieldError(colorInput, colorError);
-    clearFieldError(adoptionStatusSelect, adoptionStatusError);
-    clearFieldError(locationInput, locationError);
-    clearFieldError(imageUrlInput, imageUrlError);
-    clearFieldError(imageAltInput, imageAltError);
-    clearFieldError(descriptionTextarea, descriptionError);
-  };
-
-  const isValidHttpUrl = (value: string): boolean => {
-    try {
-      const parsedUrl = new URL(value);
-
-      return parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:";
-    } catch {
-      return false;
-    }
+    fieldErrors.forEach(([field, errorElement]) => {
+      clearFieldError(field, errorElement);
+    });
   };
 
   const updateAgeField = (): void => {
@@ -527,52 +494,12 @@ export function initCreatePetPage(): void {
 
   updateAgeField();
 
-  nameInput.addEventListener("input", () => {
-    clearFieldError(nameInput, nameError);
-  });
+  fieldErrors.forEach(([field, errorElement]) => {
+    const eventType = field instanceof HTMLSelectElement ? "change" : "input";
 
-  speciesInput.addEventListener("input", () => {
-    clearFieldError(speciesInput, speciesError);
-  });
-
-  breedInput.addEventListener("input", () => {
-    clearFieldError(breedInput, breedError);
-  });
-
-  ageInput.addEventListener("input", () => {
-    clearFieldError(ageInput, ageError);
-  });
-
-  genderSelect.addEventListener("change", () => {
-    clearFieldError(genderSelect, genderError);
-  });
-
-  sizeSelect.addEventListener("change", () => {
-    clearFieldError(sizeSelect, sizeError);
-  });
-
-  colorInput.addEventListener("input", () => {
-    clearFieldError(colorInput, colorError);
-  });
-
-  adoptionStatusSelect.addEventListener("change", () => {
-    clearFieldError(adoptionStatusSelect, adoptionStatusError);
-  });
-
-  locationInput.addEventListener("input", () => {
-    clearFieldError(locationInput, locationError);
-  });
-
-  imageUrlInput.addEventListener("input", () => {
-    clearFieldError(imageUrlInput, imageUrlError);
-  });
-
-  imageAltInput.addEventListener("input", () => {
-    clearFieldError(imageAltInput, imageAltError);
-  });
-
-  descriptionTextarea.addEventListener("input", () => {
-    clearFieldError(descriptionTextarea, descriptionError);
+    field.addEventListener(eventType, () => {
+      clearFieldError(field, errorElement);
+    });
   });
 
   let isSubmitting = false;

@@ -14,9 +14,9 @@ function registrationSuccessMessage(): string {
 
   return `
     <p
-    class="mb-6 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-center text-green-800"
-    role="status"
-    aria-live="polite"
+      class="mb-6 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-center text-green-800"
+      role="status"
+      aria-live="polite"
     >
       Registration successful! You are now logged in.
     </p>
@@ -58,8 +58,7 @@ export function homePage(): string {
             Give a pet the loving home it deserves. Adopt, don't shop!
           </h1>
 
-          <p class="mt-5 max-w-xl text-lg leading-relaxed text-[#2c2c2c]"
-          >
+          <p class="mt-5 max-w-xl text-lg leading-relaxed text-[#2c2c2c]">
             Browse pets looking for their forever homes and find the companion who is right for you.
           </p>
 
