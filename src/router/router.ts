@@ -117,7 +117,8 @@ export function renderRoute(): void {
   hasRenderedInitialRoute = true;
 }
 
-/** Starts the router and listens for route and authentication changes.
+/**
+ * Starts the router and listens for route and authentication changes.
  */
 export function initRouter(): void {
   renderRoute();

@@ -181,8 +181,8 @@ export function listingsPage(): string {
   <section aria-labelledby="listings-heading">
     <header class="mb-8">
       <h1 
-      id="listings-heading"
-      class="text-3xl font-bold text-[#2d6a6a]"
+        id="listings-heading"
+        class="text-3xl font-bold text-[#2d6a6a]"
       >
         Pets Available for Adoption
       </h1>
@@ -194,8 +194,8 @@ export function listingsPage(): string {
 
     <div class="mb-8 max-w-xl">
       <label 
-      for="pet-search"
-      class="mb-2 block font-semibold text-[#2c2c2c]"
+        for="pet-search"
+        class="mb-2 block font-semibold text-[#2c2c2c]"
       >
         Search Pets
       </label>
@@ -213,8 +213,7 @@ export function listingsPage(): string {
         focus:outline-none
         focus:ring-2
         focus:ring-[#2d6a6a]
-        focus:ring-offset-2
-    "
+        focus:ring-offset-2"
       />
     </div>
 
@@ -224,95 +223,103 @@ export function listingsPage(): string {
       </legend>
       <div>
         <label
-        for="filter-species"
-        class="mb-2 block font-semibold text-[#2c2c2c]"
+          for="filter-species"
+          class="mb-2 block font-semibold text-[#2c2c2c]"
         >
           Species
         </label>
         
         <select
-        id="filter-species"
-        data-species-filter
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
-        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
-        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+          id="filter-species"
+          data-species-filter
+          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+          text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+          focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
         >
-          <option value="">All Species</option>
+          <option value=""
+          >
+            All Species
+          </option>
         </select>
       </div>
 
       <div>
         <label
-        for="filter-size"
-        class="mb-2 block font-semibold text-[#2c2c2c]"
+          for="filter-size"
+          class="mb-2 block font-semibold text-[#2c2c2c]"
         >
           Size
         </label>
 
         <select
-        id="filter-size"
-        data-size-filter
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
-        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
-        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+          id="filter-size"
+          data-size-filter
+          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+          text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+          focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
         >
-          <option value="">All Sizes</option>
+          <option value="">
+            All Sizes
+          </option>
         </select>
       </div>
 
       <div>
         <label
-        for="filter-gender"
-        class="mb-2 block font-semibold text-[#2c2c2c]"
+          for="filter-gender"
+          class="mb-2 block font-semibold text-[#2c2c2c]"
         >
-        Gender
+          Gender
         </label>
 
         <select
-        id="filter-gender"
-        data-gender-filter
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
-        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
-        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+          id="filter-gender"
+          data-gender-filter
+          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+          text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+          focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
         >
           <option value="">
-          All Genders</option>
+            All Genders
+          </option>
         </select>
       </div>
 
       <div>
         <label
-        for="filter-adoption-status"
-        class="mb-2 block font-semibold text-[#2c2c2c]"
+          for="filter-adoption-status"
+          class="mb-2 block font-semibold text-[#2c2c2c]"
         >
           Adoption Status
         </label>
 
         <select
-        id="filter-adoption-status"
-        data-adoption-status-filter
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
-        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
-        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+          id="filter-adoption-status"
+          data-adoption-status-filter
+          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+          text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+          focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
         >
-          <option value="">All Statuses</option>
-          </select>
+          <option value="">
+            All Statuses
+          </option>
+        </select>
       </div>
 
     <div>
       <label
-      for="sort-pets"
-      class="mb-2 block font-semibold text-[#2c2c2c]"
+        for="sort-pets"
+        class="mb-2 block font-semibold text-[#2c2c2c]"
       >
         Sort By
       </label>
 
       <select
-      id="sort-pets"
-      data-pet-sort
-      class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
-      text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
-      focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
+        id="sort-pets"
+        data-pet-sort
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3
+        text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none
+        focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
       >
         <option value="">Default</option>
         <option value="name-asc">Name (A-Z)</option>
@@ -324,16 +331,15 @@ export function listingsPage(): string {
 
   <div class="mb-8">
     <button
-    type="button"
-    data-reset-filters
-    class="
-    rounded-lg border-2 border-[#2d6a6a] px-4 py-2
-    font-semibold text-[#2d6a6a] 
-    transition-colors duration-200
-    hover:bg-[#2d6a6a] hover:text-white
-    focus:outline-none focus:ring-2
-    focus:ring-[#2d6a6a] focus:ring-offset-2
-    "
+      type="button"
+      data-reset-filters
+      class="
+      rounded-lg border-2 border-[#2d6a6a] px-4 py-2
+      font-semibold text-[#2d6a6a] 
+      transition-colors duration-200
+      hover:bg-[#2d6a6a] hover:text-white
+      focus:outline-none focus:ring-2
+      focus:ring-[#2d6a6a] focus:ring-offset-2"
     >
       Reset Filters
     </button>
@@ -343,61 +349,60 @@ export function listingsPage(): string {
 
     <div data-listings-container aria-busy="true">
       <p
-      data-listings-status
-      role="status"
-      aria-live="polite"
-      class="text-center text-[#2c2c2c]"
+        data-listings-status
+        role="status"
+        aria-live="polite"
+        class="text-center text-[#2c2c2c]"
       >
         Loading pets...
       </p>
 
       <div
-      data-pet-list
-      class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        data-pet-list
+        class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       ></div>
 
       <nav
-      data-pagination
-      class="mt-8 hidden flex-col items-center gap-4"
-      aria-label="Pet listings pagination"
+        data-pagination
+        class="mt-8 hidden flex-col items-center gap-4"
+        aria-label="Pet listings pagination"
       >
 
         <p
-        data-pagination-summary
-        class="text-sm text-[#2c2c2c]"
-        aria-live="polite"
+          data-pagination-summary
+          class="text-sm text-[#2c2c2c]"
+          aria-live="polite"
         ></p>
           
-
         <div
-        class="flex flex-wrap items-center justify-center gap-2">
+          class="flex flex-wrap items-center justify-center gap-2">
           <button
-          type="button"
-          data-page-previous
-          class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
-          font-semibold text-[#2d6a6a] transition-colors
-          hover:bg-[#2d6a6a] hover:text-white
-          focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
-          disabled:cursor-not-allowed disabled:border-gray-300
-          disabled:bg-gray-300 disabled:text-gray-500"
+            type="button"
+            data-page-previous
+            class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
+            font-semibold text-[#2d6a6a] transition-colors
+            hover:bg-[#2d6a6a] hover:text-white
+            focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
+            disabled:cursor-not-allowed disabled:border-gray-300
+            disabled:bg-gray-300 disabled:text-gray-500"
           >
             Previous
           </button>
 
           <div
-          data-page-buttons
-          class="flex flex-wrap items-center justify-center gap-2"
+            data-page-buttons
+            class="flex flex-wrap items-center justify-center gap-2"
           ></div>
 
           <button
-          type="button"
-          data-page-next
-          class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
-          font-semibold text-[#2d6a6a] transition-colors
-          hover:bg-[#2d6a6a] hover:text-white
-          focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
-          disabled:cursor-not-allowed disabled:border-gray-300
-          disabled:bg-gray-300 disabled:text-gray-500"
+            type="button"
+            data-page-next
+            class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
+            font-semibold text-[#2d6a6a] transition-colors
+            hover:bg-[#2d6a6a] hover:text-white
+            focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
+            disabled:cursor-not-allowed disabled:border-gray-300
+            disabled:bg-gray-300 disabled:text-gray-500"
           >
             Next
           </button>
@@ -582,15 +587,15 @@ export async function initListingsPage(): Promise<void> {
 
             return `
               <button 
-              type="button"
-              data-page-number="${pageNumber}" 
-              aria-label="Go to page ${pageNumber}"
-              ${isCurrentPage ? 'aria-current="page"' : ""}
-              class="min-w-10 rounded-lg border-2 px-3 py-2
-              font-semibold transition-colors
-              focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 ${stateClasses}"
+                type="button"
+                data-page-number="${pageNumber}" 
+                aria-label="Go to page ${pageNumber}"
+                ${isCurrentPage ? 'aria-current="page"' : ""}
+                class="min-w-10 rounded-lg border-2 px-3 py-2
+                font-semibold transition-colors
+                focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 ${stateClasses}"
               >
-              ${pageNumber}
+                ${pageNumber}
               </button>`;
           },
         ).join("");
