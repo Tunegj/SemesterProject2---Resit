@@ -3,7 +3,8 @@
 17.06.2026: Couldn't get the API to work, so used ChatGpt to find the error.
 outcome: I had the wrong URL in the .env file, and also I had a typo in the id of the element I was testing with. After fixing these, the API calls worked as expected.
 
-20.06.2026: Spent hours trying to figure out why Tailwind wasn't working. Finally reached the conclusion that the Tailwind v4 + Vite v8 setup was not processing Tailwind correctly in the project.
+20.06.2026:
+Problem: Spent hours trying to figure out why Tailwind wasn't working. Finally reached the conclusion that the Tailwind v4 + Vite v8 setup was not processing Tailwind correctly in the project.
 Fix: I switched to Tailwind v3 and configured tailwind.config.js to include the correct content paths, index.css to import Tailwind's base, components, and utilities and removed import tailwindcss from @tailwindcss/vite from vite.config.ts. After these changes, Tailwind started working as expected.
 
 21.06.2026: Trouble shooting why my hamb.menu was not working, tested with console logs to see if the event listener was being added and if the click event was being registered - when I saw initHeader was doing its job correctly I pasted the file into ChatGPT and asked for help.
@@ -24,3 +25,9 @@ Outcome: I had put focus:outline-none on the main element, which fixed the probl
 10.07.26
 Asked chat gpt to revise my JSDOCs, looked over its suggestions and implemented the changes I considered appropriate.
 I also asked it to look over my indentations in the HTML code, as Prettier does not automatically indent HTML code correctly, and it suggested some changes I implemented.
+
+10.07.26
+Problem: The deployed GitHub Pages returned 404 errors for JS, CSS and favicon files. I pasted the console to Chat GPT and asked for help.
+There was a typo in the name of vite.config.ts, and Github Pages was using an older deployment workflow.
+Outcome: Renamed the config file, changed the GitHub Pages deployment source to GitHub Actions. Prepared a new workflow to build the project and deploy the dist folder correctly.
+After these changes, the project was deployed correctly and the 404 errors were gone.

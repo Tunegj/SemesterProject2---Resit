@@ -48,7 +48,7 @@ export function petCard(pet: Pet, headingLevel: "h2" | "h3" = "h2"): string {
   const statusClasses = {
     available: "bg-[#4CAF50] text-[#2c2c2c]",
     pending: "bg-[#F59E0B] text-[#2c2c2c]",
-    adopted: "bg-[#7C8595] text-white",
+    adopted: "bg-gray-700 text-white",
   } as const;
 
   const statusClass =
