@@ -20,3 +20,7 @@ Outcome: I had forgotten to add the Authorization header to the createPet functi
 08.07.2026:
 Problem: A black outline around the main content kept appearing when I redirected routes. Wasn't sure why, so I pasted the code into ChatGPT and asked for help.
 Outcome: I had put focus:outline-none on the main element, which fixed the problem.
+
+10.07.26
+Asked chat gpt to revise my JSDOCs, looked over its suggestions and implemented the changes I considered appropriate.
+I also asked it to look over my indentations in the HTML code, as Prettier does not automatically indent HTML code correctly, and it suggested some changes I implemented.
