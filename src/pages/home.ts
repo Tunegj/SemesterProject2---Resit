@@ -74,7 +74,7 @@ export function homePage(): string {
           class="overflow-hidden"
         >
           <img
-            src="/images/hero-image.webp"
+            src="${import.meta.env.BASE_URL}images/hero-image.jpg"
             alt="A human hand touching the paw of a cat."
             class="h-72 w-full object-cover sm:h-80 lg:h-[26rem]  rounded-xl"
           />
