@@ -41,6 +41,20 @@ function focusMainContent(): void {
   });
 }
 
+const pageTitles: Record<string, string> = {
+  "#/": "Home | FureverHome",
+  "#/listings": "Available Pets | FureverHome",
+  "#/listing": "Pet Details | FureverHome",
+  "#/create": "Create Listing | FureverHome",
+  "#/edit": "Edit Listing | FureverHome",
+  "#/login": "Login | FureverHome",
+  "#/register": "Register | FureverHome",
+  "#/profile": "Profile | FureverHome",
+};
+
+function updatePageTitle(route: string): void {
+  document.title = pageTitles[route] ?? "Page Not Found | FureverHome";
+}
 /**
  * Renders and initializes the page matching the current route.
  * Redirects users who do not have access to protected or guest-only routes.
@@ -62,6 +76,8 @@ export function renderRoute(): void {
     window.location.hash = "#/";
     return;
   }
+
+  updatePageTitle(route);
 
   switch (route) {
     case "#/":
