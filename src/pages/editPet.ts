@@ -53,7 +53,6 @@ export function editPetPage(): string {
  * @return The Edit Pet form markup
  */
 function editPetForm(pet: Pet): string {
-  const ageIsUnknown = pet.age === 0;
   const normalizedGender = pet.gender?.trim().toLowerCase() ?? "";
   const normalizedSize = pet.size?.trim().toLowerCase() ?? "";
   const normalizedAdoptionStatus =
@@ -155,7 +154,7 @@ function editPetForm(pet: Pet): string {
             class="mb-2 block font-semibold text-[#2c2c2c]"
           >
             Age
-            <span aria-hidden="true" data-age-required ${ageIsUnknown ? "hidden" : ""}>*</span>
+            <span aria-hidden="true">*</span>
           </label>
           <input
             id="pet-age"
@@ -163,8 +162,7 @@ function editPetForm(pet: Pet): string {
             type="number"
             min="1"
             step="1"
-            value="${ageIsUnknown ? "" : String(pet.age)}"
-            ${ageIsUnknown ? "disabled" : "required"}
+            value="${pet.age > 0 ? String(pet.age) : ""}"
             aria-describedby="pet-age-error pet-age-help"
             class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]"
           />
@@ -173,28 +171,10 @@ function editPetForm(pet: Pet): string {
             id="pet-age-error"
             class="mt-1 hidden text-sm text-[#C95A5A]"
           ></p>
-      
-
-          <div class="mt-3 flex items-center gap-2">
-            <input
-              id="pet-age-unknown"
-              name="ageUnknown"
-              type="checkbox"
-              data-age-unknown
-              ${ageIsUnknown ? "checked" : ""}
-              class="h-4 w-4 accent-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
-            />
-
-            <label
-              for="pet-age-unknown"
-              class="text-[#2c2c2c]"
-            >
-              Age unknown
-            </label>
-          </div>
+    
 
           <p id="pet-age-help" class="mt-2 text-sm text-gray-600">
-            If the pet's age is unknown, check the box above. Otherwise, enter the pet's age in years.
+            Enter the pet's age in years.
           </p>
         </div>
     
@@ -442,7 +422,7 @@ function editPetForm(pet: Pet): string {
 
         <button
           type="submit"
-          class="rounded-xl bg-[#2d6a6a] px-4 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+          class="rounded-lg bg-[#2d6a6a] px-4 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
         >
           Save Changes
         </button>
@@ -466,7 +446,7 @@ function editPetForm(pet: Pet): string {
       <button
         type="button"
         data-open-delete-modal
-        class="mt-5 rounded-xl bg-red-700 px-4 py-3 font-semibold text-white transition hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+        class="mt-5 rounded-lg bg-red-700 px-4 py-3 font-semibold text-white transition hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
       >
         Delete Listing
       </button>
@@ -505,7 +485,7 @@ function editPetForm(pet: Pet): string {
           <button
             type="button"
             data-cancel-delete
-            class="rounded-xl bg-gray-200 px-4 py-3 font-semibold text-[#2c2c2c] transition hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+            class="rounded-lg bg-gray-200 px-4 py-3 font-semibold text-[#2c2c2c] transition hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
           >
             Cancel
           </button>
@@ -513,7 +493,7 @@ function editPetForm(pet: Pet): string {
           <button
             type="button"
             data-confirm-delete
-            class="rounded-xl bg-red-700 px-4 py-3 font-semibold text-white transition hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+            class="rounded-lg bg-red-700 px-4 py-3 font-semibold text-white transition hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
           >
             Delete Listing
           </button>
@@ -541,11 +521,7 @@ function initEditPetForm(petId: string): void {
   const speciesInput = form.querySelector<HTMLInputElement>("#pet-species");
   const breedInput = form.querySelector<HTMLInputElement>("#pet-breed");
   const ageInput = form.querySelector<HTMLInputElement>("#pet-age");
-  const ageUnknownCheckbox =
-    form.querySelector<HTMLInputElement>("[data-age-unknown]");
-  const requiredIndicator = form.querySelector<HTMLElement>(
-    "[data-age-required]",
-  );
+
   const genderSelect = form.querySelector<HTMLSelectElement>("#pet-gender");
   const sizeSelect = form.querySelector<HTMLSelectElement>("#pet-size");
   const colorInput = form.querySelector<HTMLInputElement>("#pet-color");
@@ -597,8 +573,6 @@ function initEditPetForm(petId: string): void {
 
   if (
     !ageInput ||
-    !ageUnknownCheckbox ||
-    !requiredIndicator ||
     !nameInput ||
     !speciesInput ||
     !breedInput ||
@@ -638,7 +612,6 @@ function initEditPetForm(petId: string): void {
     speciesInput,
     breedInput,
     ageInput,
-    ageUnknownCheckbox,
     genderSelect,
     sizeSelect,
     colorInput,
@@ -674,30 +647,6 @@ function initEditPetForm(petId: string): void {
   };
 
   const defaultSubmitText = submitButton.textContent?.trim() ?? "Save Changes";
-
-  const clearAgeError = (): void => {
-    clearFieldError(ageInput, ageError);
-  };
-
-  const updateAgeField = (): void => {
-    const ageIsUnknown = ageUnknownCheckbox.checked;
-
-    ageInput.disabled = ageIsUnknown;
-    ageInput.required = !ageIsUnknown;
-    requiredIndicator.hidden = ageIsUnknown;
-
-    if (ageIsUnknown) {
-      ageInput.value = "";
-      clearAgeError();
-    }
-  };
-
-  ageUnknownCheckbox.addEventListener("change", () => {
-    updateAgeField();
-    clearFieldError(ageInput, ageError);
-  });
-
-  updateAgeField();
 
   fieldErrors.forEach(([field, errorElement]) => {
     const eventType = field instanceof HTMLSelectElement ? "change" : "input";
@@ -818,22 +767,17 @@ function initEditPetForm(petId: string): void {
       hasValidationErrors = true;
     }
 
-    if (!ageUnknownCheckbox.checked) {
-      if (!ageInput.value.trim()) {
-        showFieldError(ageInput, ageError, "Please enter the pet's age.");
-        hasValidationErrors = true;
-      } else if (
-        !Number.isFinite(ageInput.valueAsNumber) ||
-        ageInput.valueAsNumber < 1 ||
-        !Number.isInteger(ageInput.valueAsNumber)
-      ) {
-        showFieldError(
-          ageInput,
-          ageError,
-          "Age must be a whole number of 1 or more.",
-        );
-        hasValidationErrors = true;
-      }
+    if (
+      !Number.isFinite(ageInput.valueAsNumber) ||
+      ageInput.valueAsNumber < 1 ||
+      !Number.isInteger(ageInput.valueAsNumber)
+    ) {
+      showFieldError(
+        ageInput,
+        ageError,
+        "Age must be a whole number of 1 or more.",
+      );
+      hasValidationErrors = true;
     }
 
     if (!genderSelect.value) {
@@ -918,7 +862,7 @@ function initEditPetForm(petId: string): void {
       return;
     }
 
-    const age = ageUnknownCheckbox.checked ? 0 : ageInput.valueAsNumber;
+    const age = ageInput.valueAsNumber;
 
     const petData: PetPayload = {
       name: nameInput.value.trim(),
@@ -977,8 +921,6 @@ function initEditPetForm(petId: string): void {
       formFields.forEach((field) => {
         field.disabled = false;
       });
-
-      updateAgeField();
 
       form.setAttribute("aria-busy", "false");
       submitButton.disabled = false;

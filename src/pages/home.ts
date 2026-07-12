@@ -64,7 +64,7 @@ export function homePage(): string {
 
           <a
             href="#/listings"
-            class="mt-8 inline-flex items-center justify-center rounded-xl bg-[#2d6a6a] px-6 py-3 font-semibold text-white shadow-md hover:bg-[#245858] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2d6a6a]"
+            class="mt-8 inline-flex items-center justify-center rounded-lg bg-[#2d6a6a] px-6 py-3 font-semibold text-white shadow-md hover:bg-[#245858] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2d6a6a]"
           >
             Browse Pets
           </a>

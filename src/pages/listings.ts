@@ -334,7 +334,7 @@ export function listingsPage(): string {
       type="button"
       data-reset-filters
       class="
-      rounded-xl border-2 border-[#2d6a6a] px-4 py-2
+      rounded-lg border-2 border-[#2d6a6a] px-4 py-2
       font-semibold text-[#2d6a6a] 
       transition-colors duration-200
       hover:bg-[#2d6a6a] hover:text-white
@@ -379,7 +379,7 @@ export function listingsPage(): string {
           <button
             type="button"
             data-page-previous
-            class="rounded-xl border-2 border-[#2d6a6a] px-4 py-2
+            class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
             font-semibold text-[#2d6a6a] transition-colors
             hover:bg-[#2d6a6a] hover:text-white
             focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
@@ -397,7 +397,7 @@ export function listingsPage(): string {
           <button
             type="button"
             data-page-next
-            class="rounded-xl border-2 border-[#2d6a6a] px-4 py-2
+            class="rounded-lg border-2 border-[#2d6a6a] px-4 py-2
             font-semibold text-[#2d6a6a] transition-colors
             hover:bg-[#2d6a6a] hover:text-white
             focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2
@@ -591,7 +591,7 @@ export async function initListingsPage(): Promise<void> {
                 data-page-number="${pageNumber}" 
                 aria-label="Go to page ${pageNumber}"
                 ${isCurrentPage ? 'aria-current="page"' : ""}
-                class="min-w-10 rounded-xl border-2 px-3 py-2
+                class="min-w-10 rounded-lg border-2 px-3 py-2
                 font-semibold transition-colors
                 focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 ${stateClasses}"
               >

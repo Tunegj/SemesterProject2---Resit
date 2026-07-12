@@ -99,7 +99,7 @@ export function createPetPage(): string {
               class="mb-2 block font-semibold text-[#2c2c2c]"
             >
               Age
-              <span data-age-required aria-hidden="true">*</span>
+              <span aria-hidden="true">*</span>
             </label>
             
             <input
@@ -113,29 +113,11 @@ export function createPetPage(): string {
               class="w-full rounded-md border border-gray-400 bg-white px-4 py-3 text-[#2c2c2c] focus:border-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a]  disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
             />
 
-            <p id="pet-age-error" class="mt-1 text-sm text-[#C95A5A] hidden">
-            </p>
-          
-
-            <div class="mt-3 flex items-center gap-2">
-              <input
-                id="pet-age-unknown"
-                name="ageUnknown"
-                type="checkbox"
-                data-age-unknown
-                class="h-4 w-4 accent-[#2d6a6a] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2"
-              />
-
-              <label
-                for="pet-age-unknown"
-                class="text-[#2c2c2c]"
-              >
-                Age Unknown
-              </label>
-            </div>
-
             <p id="pet-age-help" class="mt-2 text-sm text-gray-600">
-              If the pet's age is unknown, check the box above. Otherwise, enter the age in years.
+              Enter the pet's age in whole years.
+            </p>
+
+            <p id="pet-age-error" class="mt-1 text-sm text-[#C95A5A] hidden">
             </p>
           </div>
 
@@ -327,7 +309,7 @@ export function createPetPage(): string {
 
         <button
           type="submit"
-          class="rounded-xl bg-[#2d6a6a] px-4 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
+          class="rounded-lg bg-[#2d6a6a] px-4 py-3 font-semibold text-white transition hover:bg-[#245858] focus:outline-none focus:ring-2 focus:ring-[#2d6a6a] focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:bg-gray-300"
         >
           Create Pet Listing
         </button>
@@ -353,11 +335,6 @@ export function initCreatePetPage(): void {
   const breedInput = document.querySelector<HTMLInputElement>("#pet-breed");
   const genderSelect = document.querySelector<HTMLSelectElement>("#pet-gender");
   const ageInput = document.querySelector<HTMLInputElement>("#pet-age");
-  const ageUnknownCheckbox =
-    document.querySelector<HTMLInputElement>("[data-age-unknown]");
-  const requiredIndicator = document.querySelector<HTMLElement>(
-    "[data-age-required]",
-  );
   const sizeSelect = document.querySelector<HTMLSelectElement>("#pet-size");
   const colorInput = document.querySelector<HTMLInputElement>("#pet-color");
   const adoptionStatusSelect = document.querySelector<HTMLSelectElement>(
@@ -404,8 +381,6 @@ export function initCreatePetPage(): void {
     !form ||
     !statusMessage ||
     !ageInput ||
-    !ageUnknownCheckbox ||
-    !requiredIndicator ||
     !nameInput ||
     !speciesInput ||
     !breedInput ||
@@ -439,7 +414,6 @@ export function initCreatePetPage(): void {
     speciesInput,
     breedInput,
     ageInput,
-    ageUnknownCheckbox,
     genderSelect,
     sizeSelect,
     colorInput,
@@ -473,26 +447,6 @@ export function initCreatePetPage(): void {
       clearFieldError(field, errorElement);
     });
   };
-
-  const updateAgeField = (): void => {
-    const ageIsUnknown = ageUnknownCheckbox.checked;
-
-    ageInput.disabled = ageIsUnknown;
-    ageInput.required = !ageIsUnknown;
-    requiredIndicator.hidden = ageIsUnknown;
-
-    if (ageIsUnknown) {
-      ageInput.value = "";
-      clearFieldError(ageInput, ageError);
-    }
-  };
-
-  ageUnknownCheckbox.addEventListener("change", () => {
-    updateAgeField();
-    clearFieldError(ageInput, ageError);
-  });
-
-  updateAgeField();
 
   fieldErrors.forEach(([field, errorElement]) => {
     const eventType = field instanceof HTMLSelectElement ? "change" : "input";
@@ -552,24 +506,18 @@ export function initCreatePetPage(): void {
       hasValidationErrors = true;
     }
 
-    if (!ageUnknownCheckbox.checked) {
-      if (!ageInput.value.trim()) {
-        showFieldError(ageInput, ageError, "Please enter the pet's age.");
+    if (
+      !Number.isFinite(ageInput.valueAsNumber) ||
+      ageInput.valueAsNumber < 1 ||
+      !Number.isInteger(ageInput.valueAsNumber)
+    ) {
+      showFieldError(
+        ageInput,
+        ageError,
+        "Age must be a whole number of 1 or more.",
+      );
 
-        hasValidationErrors = true;
-      } else if (
-        !Number.isFinite(ageInput.valueAsNumber) ||
-        ageInput.valueAsNumber < 1 ||
-        !Number.isInteger(ageInput.valueAsNumber)
-      ) {
-        showFieldError(
-          ageInput,
-          ageError,
-          "Age must be a whole number of 1 or more.",
-        );
-
-        hasValidationErrors = true;
-      }
+      hasValidationErrors = true;
     }
 
     if (!genderSelect.value) {
@@ -652,7 +600,7 @@ export function initCreatePetPage(): void {
       return;
     }
 
-    const age = ageUnknownCheckbox.checked ? 0 : ageInput.valueAsNumber;
+    const age = ageInput.valueAsNumber;
 
     const petData: PetPayload = {
       name,
@@ -712,8 +660,6 @@ export function initCreatePetPage(): void {
       formFields.forEach((field) => {
         field.disabled = false;
       });
-
-      updateAgeField();
 
       form.setAttribute("aria-busy", "false");
       submitButton.disabled = false;
